@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 
 const router = Router();
@@ -7,13 +8,13 @@ const router = Router();
 router.get('/', async (req: Request, res: Response) => {
   const { search, party, state } = req.query;
 
-  const where: Record<string, unknown> = { isActive: true };
+  const where: Prisma.PoliticianWhereInput = { isActive: true };
 
   if (search) {
     where.name = { contains: search as string, mode: 'insensitive' };
   }
   if (party) {
-    where.party = party;
+    where.party = party as 'DEM' | 'REP' | 'IND' | 'OTHER';
   }
   if (state) {
     where.state = { equals: state as string, mode: 'insensitive' };

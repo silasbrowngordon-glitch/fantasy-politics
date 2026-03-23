@@ -1,5 +1,6 @@
 import { Router, Response } from 'express';
 import { requireAuth, AuthRequest } from '../middleware/auth';
+import { Prisma, type DraftPick, type LeagueMember, type LeagueMemberDailyTotal, type StartingLineup, type DailyScore, type Politician } from '@prisma/client';
 import prisma from '../lib/prisma';
 import { randomBytes } from 'crypto';
 
@@ -78,7 +79,7 @@ router.post('/join', requireAuth, async (req: AuthRequest, res: Response) => {
     return res.status(400).json({ error: 'League is full' });
   }
 
-  const alreadyMember = league.members.find((m) => m.userId === req.user!.id);
+  const alreadyMember = league.members.find((m: LeagueMember) => m.userId === req.user!.id);
   if (alreadyMember) {
     return res.status(409).json({ error: 'You are already in this league' });
   }
@@ -117,18 +118,18 @@ router.get('/:id', requireAuth, async (req: AuthRequest, res: Response) => {
   if (!league) return res.status(404).json({ error: 'League not found' });
 
   // Calculate season totals
-  const standings = league.members.map((member) => {
-    const seasonTotal = member.dailyTotals.reduce((sum, dt) => sum + dt.totalPoints, 0);
+  const standings = league.members.map((member: LeagueMember & { dailyTotals: LeagueMemberDailyTotal[] }) => {
+    const seasonTotal = member.dailyTotals.reduce((sum: number, dt: LeagueMemberDailyTotal) => sum + dt.totalPoints, 0);
     const today = new Date().toISOString().split('T')[0];
     const todayTotal = member.dailyTotals.find(
-      (dt) => dt.date.toISOString().split('T')[0] === today
+      (dt: LeagueMemberDailyTotal) => dt.date.toISOString().split('T')[0] === today
     )?.totalPoints ?? 0;
     return {
       ...member,
       seasonTotal,
       todayTotal,
     };
-  }).sort((a, b) => b.seasonTotal - a.seasonTotal);
+  }).sort((a: { seasonTotal: number }, b: { seasonTotal: number }) => b.seasonTotal - a.seasonTotal);
 
   return res.json({ league: { ...league, members: standings } });
 });
@@ -157,7 +158,7 @@ router.get('/:id/draft', requireAuth, async (req: AuthRequest, res: Response) =>
   if (!league) return res.status(404).json({ error: 'League not found' });
 
   const totalPicks = league.members.length * league.rosterSize;
-  const pickedIds = league.draftPicks.map((dp) => dp.politicianId);
+  const pickedIds = league.draftPicks.map((dp: DraftPick) => dp.politicianId);
   const currentPickNumber = league.draftPicks.length + 1;
 
   let currentPickMemberId: string | null = null;
@@ -191,7 +192,7 @@ router.post('/:id/draft/start', requireAuth, async (req: AuthRequest, res: Respo
 
   if (!league) return res.status(404).json({ error: 'League not found' });
 
-  const member = league.members.find((m) => m.userId === req.user!.id);
+  const member = league.members.find((m: LeagueMember) => m.userId === req.user!.id);
   if (!member?.isCommissioner) {
     return res.status(403).json({ error: 'Only the commissioner can start the draft' });
   }
@@ -240,7 +241,7 @@ router.post('/:id/draft/pick', requireAuth, async (req: AuthRequest, res: Respon
     return res.status(400).json({ error: 'Draft is not active' });
   }
 
-  const member = league.members.find((m) => m.userId === req.user!.id);
+  const member = league.members.find((m: LeagueMember) => m.userId === req.user!.id);
   if (!member) return res.status(403).json({ error: 'Not a member of this league' });
 
   const totalPicks = league.members.length * league.rosterSize;
@@ -262,7 +263,7 @@ router.post('/:id/draft/pick', requireAuth, async (req: AuthRequest, res: Respon
   }
 
   // Check if politician already picked
-  const alreadyPicked = league.draftPicks.find((dp) => dp.politicianId === politicianId);
+  const alreadyPicked = league.draftPicks.find((dp: DraftPick) => dp.politicianId === politicianId);
   if (alreadyPicked) {
     return res.status(409).json({ error: 'Politician already drafted in this league' });
   }
@@ -270,12 +271,12 @@ router.post('/:id/draft/pick', requireAuth, async (req: AuthRequest, res: Respon
   const politician = await prisma.politician.findUnique({ where: { id: politicianId, isActive: true } });
   if (!politician) return res.status(404).json({ error: 'Politician not found' });
 
-  const memberPicks = league.draftPicks.filter((dp) => dp.leagueMemberId === member.id);
+  const memberPicks = league.draftPicks.filter((dp: DraftPick) => dp.leagueMemberId === member.id);
   if (memberPicks.length >= league.rosterSize) {
     return res.status(400).json({ error: 'Roster is full' });
   }
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const pick = await tx.draftPick.create({
       data: {
         leagueMemberId: member.id,
@@ -334,11 +335,11 @@ router.get('/:id/roster', requireAuth, async (req: AuthRequest, res: Response) =
 
   if (!member) return res.status(404).json({ error: 'Not a member of this league' });
 
-  const roster = member.draftPicks.map((dp) => {
+  const roster = member.draftPicks.map((dp: DraftPick & { politician: Politician & { dailyScores: DailyScore[] } }) => {
     const isStarter = member.startingLineup.find(
-      (sl) => sl.politicianId === dp.politicianId
+      (sl: StartingLineup) => sl.politicianId === dp.politicianId
     )?.isStarter ?? false;
-    const seasonTotal = dp.politician.dailyScores.reduce((sum, ds) => sum + ds.points, 0);
+    const seasonTotal = dp.politician.dailyScores.reduce((sum: number, ds: DailyScore) => sum + ds.points, 0);
     return { ...dp.politician, isStarter, seasonTotal, draftOrder: dp.draftOrder };
   });
 
@@ -364,7 +365,7 @@ router.put('/:id/lineup', requireAuth, async (req: AuthRequest, res: Response) =
 
   if (!member) return res.status(404).json({ error: 'Not a member of this league' });
 
-  const rosterIds = member.draftPicks.map((dp) => dp.politicianId);
+  const rosterIds = member.draftPicks.map((dp: DraftPick) => dp.politicianId);
   for (const sid of starterIds) {
     if (!rosterIds.includes(sid)) {
       return res.status(400).json({ error: 'Politician not on your roster' });
@@ -372,7 +373,7 @@ router.put('/:id/lineup', requireAuth, async (req: AuthRequest, res: Response) =
   }
 
   await prisma.$transaction(
-    rosterIds.map((pid) =>
+    rosterIds.map((pid: string) =>
       prisma.startingLineup.upsert({
         where: { leagueMemberId_politicianId: { leagueMemberId: member.id, politicianId: pid } },
         create: { leagueMemberId: member.id, politicianId: pid, isStarter: starterIds.includes(pid) },
@@ -406,10 +407,10 @@ router.post('/:id/waiver', requireAuth, async (req: AuthRequest, res: Response) 
 
   if (!member) return res.status(404).json({ error: 'Not a member of this league' });
 
-  const dropping = member.draftPicks.find((dp) => dp.politicianId === dropId);
+  const dropping = member.draftPicks.find((dp: DraftPick) => dp.politicianId === dropId);
   if (!dropping) return res.status(400).json({ error: 'Politician not on your roster' });
 
-  const alreadyOwned = league.draftPicks.find((dp) => dp.politicianId === pickupId);
+  const alreadyOwned = league.draftPicks.find((dp: DraftPick) => dp.politicianId === pickupId);
   if (alreadyOwned) return res.status(409).json({ error: 'Politician already on a roster' });
 
   const politician = await prisma.politician.findUnique({ where: { id: pickupId, isActive: true } });
@@ -452,11 +453,11 @@ router.get('/:id/roster/:memberId', requireAuth, async (req: AuthRequest, res: R
 
   if (!member) return res.status(404).json({ error: 'Member not found' });
 
-  const roster = member.draftPicks.map((dp) => {
+  const roster = member.draftPicks.map((dp: DraftPick & { politician: Politician & { dailyScores: DailyScore[] } }) => {
     const isStarter = member.startingLineup.find(
-      (sl) => sl.politicianId === dp.politicianId
+      (sl: StartingLineup) => sl.politicianId === dp.politicianId
     )?.isStarter ?? false;
-    const seasonTotal = dp.politician.dailyScores.reduce((sum, ds) => sum + ds.points, 0);
+    const seasonTotal = dp.politician.dailyScores.reduce((sum: number, ds: DailyScore) => sum + ds.points, 0);
     return { ...dp.politician, isStarter, seasonTotal };
   });
 

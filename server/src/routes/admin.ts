@@ -1,5 +1,6 @@
 import { Router, Response } from 'express';
 import { requireAdmin, AuthRequest } from '../middleware/auth';
+import { type DailyScore, type Politician, type DraftPick, type StartingLineup } from '@prisma/client';
 import prisma from '../lib/prisma';
 import multer from 'multer';
 import { parse } from 'csv-parse/sync';
@@ -81,9 +82,9 @@ router.get('/scores', async (req: AuthRequest, res: Response) => {
 
   const scores = await prisma.dailyScore.findMany({ where: { date } });
 
-  const scoreMap = new Map(scores.map((s) => [s.politicianId, s]));
+  const scoreMap = new Map(scores.map((s: DailyScore) => [s.politicianId, s]));
 
-  const rows = politicians.map((p) => ({
+  const rows = politicians.map((p: Politician) => ({
     ...p,
     score: scoreMap.get(p.id) ?? null,
   }));
@@ -134,15 +135,15 @@ async function recalculateDailyTotals(date: Date) {
   });
 
   const scores = await prisma.dailyScore.findMany({ where: { date } });
-  const scoreMap = new Map(scores.map((s) => [s.politicianId, s.points]));
+  const scoreMap = new Map(scores.map((s: DailyScore) => [s.politicianId, s.points]));
 
   const upserts = [];
   for (const league of leagues) {
     for (const member of league.members) {
-      const starterIds = new Set(member.startingLineup.map((sl) => sl.politicianId));
-      const rosterIds = member.draftPicks.map((dp) => dp.politicianId);
-      const activeStarters = rosterIds.filter((id) => starterIds.has(id));
-      const total = activeStarters.reduce((sum, pid) => sum + (scoreMap.get(pid) ?? 0), 0);
+      const starterIds = new Set(member.startingLineup.map((sl: StartingLineup) => sl.politicianId));
+      const rosterIds = member.draftPicks.map((dp: DraftPick) => dp.politicianId);
+      const activeStarters = rosterIds.filter((id: string) => starterIds.has(id));
+      const total = activeStarters.reduce((sum: number, pid: string) => sum + (scoreMap.get(pid) ?? 0), 0);
 
       upserts.push(
         prisma.leagueMemberDailyTotal.upsert({
