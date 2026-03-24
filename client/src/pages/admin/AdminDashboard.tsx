@@ -3,11 +3,17 @@ import { Link } from 'react-router-dom';
 
 const sections = [
   {
+    to: '/admin/ai-scoring',
+    icon: '✨',
+    title: 'AI Score Generator',
+    desc: 'Paste today\'s news headlines and let Claude auto-generate scores.',
+    highlight: true,
+  },
+  {
     to: '/admin/scores',
     icon: '📊',
     title: 'Daily Score Entry',
-    desc: 'Enter today\'s point values for all active politicians.',
-    highlight: true,
+    desc: 'Manually enter today\'s point values for all active politicians.',
   },
   {
     to: '/admin/politicians',

@@ -23,6 +23,7 @@ import AdminPoliticians from './pages/admin/AdminPoliticians';
 import AdminScores from './pages/admin/AdminScores';
 import AdminLeagues from './pages/admin/AdminLeagues';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminAiScoring from './pages/admin/AdminAiScoring';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -79,6 +80,7 @@ function AppRoutes() {
       <Route path="/admin/scores" element={<AdminRoute><AdminScores /></AdminRoute>} />
       <Route path="/admin/leagues" element={<AdminRoute><AdminLeagues /></AdminRoute>} />
       <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
+      <Route path="/admin/ai-scoring" element={<AdminRoute><AdminAiScoring /></AdminRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
