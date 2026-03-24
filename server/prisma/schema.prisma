@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PLAYER
+  ADMIN
+}
+
+enum Party {
+  DEM
+  REP
+  IND
+  OTHER
+}
+
+enum DraftStatus {
+  PREDRAFT
+  DRAFTING
+  COMPLETE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  username     String   @unique
+  role         Role     @default(PLAYER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  leagueMembers LeagueMember[]
+}
+
+model League {
+  id         String      @id @default(cuid())
+  name       String
+  inviteCode String      @unique
+  maxMembers Int         @default(10)
+  rosterSize Int         @default(10)
+  starterSize Int        @default(8)
+  draftStatus DraftStatus @default(PREDRAFT)
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+
+  members    LeagueMember[]
+  draftPicks DraftPick[]
+}
+
+model LeagueMember {
+  id         String   @id @default(cuid())
+  userId     String
+  leagueId   String
+  teamName   String
+  draftOrder Int?
+  isCommissioner Boolean @default(false)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+  league     League   @relation(fields: [leagueId], references: [id])
+  draftPicks DraftPick[]
+  dailyTotals LeagueMemberDailyTotal[]
+  startingLineup StartingLineup[]
+
+  @@unique([userId, leagueId])
+}
+
+model Politician {
+  id       String  @id @default(cuid())
+  name     String
+  title    String
+  party    Party
+  state    String
+  imageUrl String?
+  bio      String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  draftPicks  DraftPick[]
+  dailyScores DailyScore[]
+}
+
+model DraftPick {
+  id             String   @id @default(cuid())
+  leagueMemberId String
+  politicianId   String
+  leagueId       String
+  draftOrder     Int
+  draftedAt      DateTime @default(now())
+
+  leagueMember LeagueMember @relation(fields: [leagueMemberId], references: [id])
+  politician   Politician   @relation(fields: [politicianId], references: [id])
+  league       League       @relation(fields: [leagueId], references: [id])
+
+  @@unique([politicianId, leagueId])
+}
+
+model StartingLineup {
+  id             String  @id @default(cuid())
+  leagueMemberId String
+  politicianId   String
+  isStarter      Boolean @default(true)
+
+  leagueMember LeagueMember @relation(fields: [leagueMemberId], references: [id])
+
+  @@unique([leagueMemberId, politicianId])
+}
+
+model DailyScore {
+  id           String   @id @default(cuid())
+  politicianId String
+  date         DateTime @db.Date
+  points       Float
+  note         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  politician Politician @relation(fields: [politicianId], references: [id])
+
+  @@unique([politicianId, date])
+}
+
+model LeagueMemberDailyTotal {
+  id             String   @id @default(cuid())
+  leagueMemberId String
+  date           DateTime @db.Date
+  totalPoints    Float    @default(0)
+
+  leagueMember LeagueMember @relation(fields: [leagueMemberId], references: [id])
+
+  @@unique([leagueMemberId, date])
+}
