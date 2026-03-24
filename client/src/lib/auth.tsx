@@ -31,16 +31,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(email: string, password: string) {
     const r = await api.post('/auth/login', { email, password });
+    localStorage.setItem('token', r.data.token);
     setUser(r.data.user);
   }
 
   async function register(email: string, username: string, password: string) {
     const r = await api.post('/auth/register', { email, username, password });
+    localStorage.setItem('token', r.data.token);
     setUser(r.data.user);
   }
 
   async function logout() {
     await api.post('/auth/logout');
+    localStorage.removeItem('token');
     setUser(null);
   }
 
