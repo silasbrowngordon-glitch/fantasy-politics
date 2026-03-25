@@ -163,6 +163,8 @@ Only include politicians who appear in the news with non-zero scores, plus any w
     }
   }
 
+  const polMap = new Map(politicians.map((p) => [p.id, p]));
+
   function updatePoints(idx: number, value: string) {
     setResults((prev) => prev.map((r, i) => i === idx ? { ...r, points: parseFloat(value) || 0 } : r));
   }
@@ -180,23 +182,36 @@ Only include politicians who appear in the news with non-zero scores, plus any w
       toast.error('No scores to submit');
       return;
     }
+
+    // Only submit rows whose politicianId actually exists in the DB.
+    // Unmatched IDs would cause the entire Prisma transaction to fail with a
+    // foreign key constraint error.
+    const valid = results.filter((r) => polMap.has(r.politicianId));
+    const skipped = results.length - valid.length;
+
+    if (valid.length === 0) {
+      toast.error('No valid politician IDs to submit — check for unmatched rows');
+      return;
+    }
+
     setSaving(true);
     try {
-      const scores = results.map((r) => ({
+      const scores = valid.map((r) => ({
         politicianId: r.politicianId,
         points: r.points,
         note: r.note || undefined,
       }));
       await api.post('/admin/scores', { date, scores });
-      toast.success(`Saved ${scores.length} scores for ${date}!`);
+      const msg = skipped > 0
+        ? `Saved ${scores.length} scores for ${date} (${skipped} unmatched row${skipped > 1 ? 's' : ''} skipped)`
+        : `Saved ${scores.length} scores for ${date}!`;
+      toast.success(msg);
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Failed to save scores');
     } finally {
       setSaving(false);
     }
   }
-
-  const polMap = new Map(politicians.map((p) => [p.id, p]));
 
   return (
     <div>
