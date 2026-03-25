@@ -24,21 +24,29 @@ const SCORING_RUBRIC = `
 You are a Fantasy Politics scoring assistant. Given today's political news, assign point scores to politicians.
 
 SCORING RUBRIC:
-- Major legislative win (bill passed, signed into law): +4 to +6 points
-- Key floor vote (voted on important legislation): +1 to +2 points
-- Major speech, press conference, or policy announcement: +1 to +2 points
-- Positive news coverage (praised, endorsed, major accomplishment): +1 to +3 points
-- Scandal, ethics violation, or serious negative coverage: -3 to -6 points
-- Minor controversy or criticism: -1 to -2 points
-- Resignation, indictment, or criminal charges: -8 to -10 points
-- Bipartisan cooperation or cross-aisle achievement: +3 points bonus
-- Committee leadership action (hearing, subpoena, etc.): +1 to +2 points
-- No notable news: 0 points
 
-RULES:
-- Only score politicians who appear in the news. Return 0 for others.
+Standard Points (legislative activity and media presence):
+- Major floor vote or key legislation passed: +5
+- Speech, press conference, or policy announcement: +3
+- Bipartisan cooperation or cross-aisle action: +3
+- Committee action (hearing, subpoena, markup): +2
+- Positive news coverage or notable accomplishment: +1 to +3
+- Breaking with their own party on a vote or issue: +2 (only if newsworthy)
+
+Chaos Bonus (controversy is rewarded, not punished):
+- Fact-check loss (major claim rated false or misleading): +3
+- Major gaffe or public embarrassment: +5
+- Ethics controversy or investigation launched: +8
+- Indictment or resignation: +10
+
+IMPORTANT RULES:
+- There are NO negative scores. All point values are zero or positive.
+- Winning committee votes or leading a coalition does NOT score unless the politician is breaking with their own party.
+- There are no Institutional Power Bonuses of any kind.
+- Points can stack — a politician can earn both a Chaos Bonus and Standard Points on the same day.
+- Only score politicians who appear in the news. Omit those with 0 points entirely.
 - Be fair and consistent across parties.
-- Points should be integers or .5 increments.
+- Points should be whole numbers.
 - The "note" should be a brief (10 words max) reason.
 `;
 

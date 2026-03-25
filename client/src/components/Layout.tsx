@@ -20,6 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { to: '/dashboard', label: 'Dashboard' },
     { to: '/leagues', label: 'Leagues' },
     { to: '/politicians', label: 'Politicians' },
+    { to: '/scoring', label: 'Scoring' },
   ];
 
   if (user?.role === 'ADMIN') {
