@@ -8,6 +8,7 @@ import leagueRoutes from './routes/leagues';
 import politicianRoutes from './routes/politicians';
 import scoreRoutes from './routes/scores';
 import adminRoutes from './routes/admin';
+import newsRoutes from './routes/news';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,6 +26,7 @@ app.use('/api/leagues', leagueRoutes);
 app.use('/api/politicians', politicianRoutes);
 app.use('/api/scores', scoreRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/news', newsRoutes);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 

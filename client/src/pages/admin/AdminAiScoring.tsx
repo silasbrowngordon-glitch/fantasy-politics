@@ -64,64 +64,22 @@ export default function AdminAiScoring() {
   }, []);
 
   async function handleFetchNews() {
-    const newsApiKey = import.meta.env.VITE_NEWS_API_KEY;
-    if (!newsApiKey) {
-      toast.error('VITE_NEWS_API_KEY is not set');
-      return;
-    }
-
     setFetchingNews(true);
-    setFetchStatus('Fetching top politics headlines...');
-
-    const queries = [
-      {
-        label: 'top US politics headlines',
-        url: `https://newsapi.org/v2/top-headlines?country=us&category=politics&pageSize=100&apiKey=${newsApiKey}`,
-      },
-      {
-        label: 'Congress / Senate / House coverage',
-        url: `https://newsapi.org/v2/everything?q=congress+senator+representative&language=en&sortBy=publishedAt&pageSize=100&apiKey=${newsApiKey}`,
-      },
-      {
-        label: 'scandals and investigations',
-        url: `https://newsapi.org/v2/everything?q=politician+investigation+indicted+resign+scandal&language=en&sortBy=publishedAt&pageSize=100&apiKey=${newsApiKey}`,
-      },
-    ];
-
+    setFetchStatus('Fetching news...');
     try {
-      const seenUrls = new Set<string>();
-      const lines: string[] = [];
-
-      for (const q of queries) {
-        setFetchStatus(`Fetching ${q.label}...`);
-        const res = await fetch(q.url);
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || `NewsAPI error ${res.status} on "${q.label}"`);
-        }
-        const json = await res.json();
-        const articles: Array<{ url: string; title?: string; description?: string }> =
-          json.articles ?? [];
-
-        for (const article of articles) {
-          if (!article.url || seenUrls.has(article.url)) continue;
-          seenUrls.add(article.url);
-          const title = article.title?.trim() ?? '';
-          const desc = article.description?.trim() ?? '';
-          if (!title && !desc) continue;
-          lines.push(desc ? `${title} — ${desc}` : title);
-        }
-      }
-
-      if (lines.length === 0) {
-        toast.error('No articles returned from NewsAPI');
+      const r = await api.get('/news/fetch');
+      const articles: Array<{ title: string; description: string }> = r.data.articles ?? [];
+      if (articles.length === 0) {
+        toast.error('No articles returned');
         return;
       }
-
+      const lines = articles.map((a) =>
+        a.description ? `${a.title} — ${a.description}` : a.title
+      );
       setNewsText(lines.join('\n'));
-      toast.success(`Fetched ${lines.length} unique articles from NewsAPI`);
+      toast.success(`Fetched ${articles.length} unique articles`);
     } catch (err: any) {
-      toast.error(err.message || 'Failed to fetch news');
+      toast.error(err.response?.data?.error || err.message || 'Failed to fetch news');
     } finally {
       setFetchingNews(false);
       setFetchStatus('');
