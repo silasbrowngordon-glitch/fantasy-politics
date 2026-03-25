@@ -1,12 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+} from 'recharts';
 import api from '../lib/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PartyBadge from '../components/PartyBadge';
 
+interface DailyScore {
+  id: string;
+  date: string;
+  points: number;
+  note?: string;
+}
+
+interface DraftPick {
+  id: string;
+  leagueMember: {
+    user: { username: string };
+    league: { id: string; name: string };
+  };
+}
+
+interface Politician {
+  id: string;
+  name: string;
+  title: string;
+  party: string;
+  state: string;
+  imageUrl?: string;
+  bio?: string;
+  isActive: boolean;
+  seasonTotal?: number;
+  dailyScores: DailyScore[];
+  draftPicks: DraftPick[];
+}
+
+function fmt(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+function fmtShort(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ value: number; payload: { date: string; note?: string } }>;
+}
+
+function CustomTooltip({ active, payload }: CustomTooltipProps) {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  const pts = payload[0].value;
+  return (
+    <div className="bg-navy-800 border border-navy-600 rounded p-3 shadow-xl max-w-xs">
+      <div className="text-sm text-gray-400 mb-1">{fmt(d.date)}</div>
+      <div className={`text-2xl font-bold ${pts > 0 ? 'text-green-400' : pts < 0 ? 'text-red-400' : 'text-gray-400'}`}>
+        {pts > 0 ? '+' : ''}{pts} pts
+      </div>
+      {d.note && <div className="text-xs text-gray-400 mt-1 leading-snug">{d.note}</div>}
+    </div>
+  );
+}
+
 export default function PoliticianProfile() {
   const { id } = useParams<{ id: string }>();
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<{ politician: Politician } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +95,20 @@ export default function PoliticianProfile() {
   if (!data) return <div className="text-gray-400">Politician not found.</div>;
 
   const { politician } = data;
+
+  // Sort scores oldest → newest for chart
+  const scores = [...politician.dailyScores].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  // Stats
+  const allTime = scores.reduce((sum, s) => sum + s.points, 0);
+  const avg = scores.length > 0 ? allTime / scores.length : 0;
+  const best = scores.length > 0 ? scores.reduce((a, b) => (b.points > a.points ? b : a)) : null;
+  const worst = scores.length > 0 ? scores.reduce((a, b) => (b.points < a.points ? b : a)) : null;
+
+  const chartData = scores.map((s) => ({ date: s.date, points: s.points, note: s.note }));
+  const hasNegative = scores.some((s) => s.points < 0);
 
   return (
     <div>
@@ -49,34 +139,129 @@ export default function PoliticianProfile() {
           </div>
           <p className="text-gray-400 mt-1">{politician.title} · {politician.state}</p>
           {politician.bio && <p className="text-gray-300 mt-3 max-w-2xl">{politician.bio}</p>}
-          <div className="mt-4">
-            <span className="text-3xl font-bold text-gold-400">{(politician.seasonTotal ?? 0).toFixed(1)}</span>
-            <span className="text-gray-500 ml-2 text-sm">season points</span>
-          </div>
         </div>
       </div>
 
+      {/* Stats row */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div className="card text-center py-4">
+          <div className="text-3xl font-bold text-gold-400">{allTime.toFixed(1)}</div>
+          <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">All-Time Points</div>
+        </div>
+        <div className="card text-center py-4">
+          <div className="text-3xl font-bold text-patriot-400">{avg.toFixed(2)}</div>
+          <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Avg / Day</div>
+        </div>
+        <div className="card text-center py-4">
+          {best ? (
+            <>
+              <div className="text-3xl font-bold text-green-400">
+                {best.points > 0 ? '+' : ''}{best.points}
+              </div>
+              <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Best Day</div>
+              <div className="text-xs text-gray-600 mt-0.5">{fmtShort(best.date)}</div>
+            </>
+          ) : (
+            <div className="text-gray-600 text-sm">No data</div>
+          )}
+        </div>
+        <div className="card text-center py-4">
+          {worst ? (
+            <>
+              <div className="text-3xl font-bold text-red-400">
+                {worst.points > 0 ? '+' : ''}{worst.points}
+              </div>
+              <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Worst Day</div>
+              <div className="text-xs text-gray-600 mt-0.5">{fmtShort(worst.date)}</div>
+            </>
+          ) : (
+            <div className="text-gray-600 text-sm">No data</div>
+          )}
+        </div>
+      </div>
+
+      {/* Chart */}
+      {scores.length > 0 && (
+        <div className="card mb-6">
+          <h2 className="text-xl font-bold text-white mb-1">Daily Points</h2>
+          <p className="text-xs text-gray-500 mb-5">{scores.length} scoring day{scores.length !== 1 ? 's' : ''} on record</p>
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <defs>
+                <linearGradient id="posGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1c3268" vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickFormatter={fmtShort}
+                tick={{ fill: '#6b7280', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                tick={{ fill: '#6b7280', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              {hasNegative && <ReferenceLine y={0} stroke="#374151" strokeDasharray="4 4" />}
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="points"
+                stroke="#cc2936"
+                strokeWidth={2}
+                fill="url(#posGrad)"
+                dot={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  const color = payload.points > 0 ? '#22c55e' : payload.points < 0 ? '#ef4444' : '#6b7280';
+                  return <circle key={`dot-${payload.date}`} cx={cx} cy={cy} r={3} fill={color} stroke="none" />;
+                }}
+                activeDot={{ r: 5, fill: '#cc2936', stroke: '#fff', strokeWidth: 2 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Score history */}
+        {/* Score history table */}
         <div className="lg:col-span-2 card">
-          <h2 className="text-xl font-bold text-white mb-4">Point History</h2>
-          {politician.dailyScores.length === 0 ? (
+          <h2 className="text-xl font-bold text-white mb-4">Score History</h2>
+          {scores.length === 0 ? (
             <p className="text-gray-500">No scores recorded yet.</p>
           ) : (
-            <div className="space-y-1 max-h-[500px] overflow-y-auto">
-              {politician.dailyScores.map((s: any) => (
-                <div key={s.id} className="flex items-start justify-between py-2.5 border-b border-navy-700 last:border-0">
-                  <div>
-                    <div className="text-sm font-semibold text-white">
-                      {new Date(s.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })}
-                    </div>
-                    {s.note && <div className="text-xs text-gray-500 mt-0.5 max-w-md">{s.note}</div>}
-                  </div>
-                  <span className={`font-bold text-lg ml-4 ${s.points > 0 ? 'text-gold-400' : s.points < 0 ? 'text-red-400' : 'text-gray-500'}`}>
-                    {s.points > 0 ? '+' : ''}{s.points}
-                  </span>
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-navy-600">
+                  <tr>
+                    <th className="table-th">Date</th>
+                    <th className="table-th text-right">Points</th>
+                    <th className="table-th">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Most recent first in the table */}
+                  {[...scores].reverse().map((s) => (
+                    <tr key={s.id} className="table-row">
+                      <td className="table-td text-sm text-gray-300 whitespace-nowrap">
+                        {fmt(s.date)}
+                      </td>
+                      <td className="table-td text-right">
+                        <span className={`font-bold text-lg ${s.points > 0 ? 'text-green-400' : s.points < 0 ? 'text-red-400' : 'text-gray-500'}`}>
+                          {s.points > 0 ? '+' : ''}{s.points}
+                        </span>
+                      </td>
+                      <td className="table-td text-sm text-gray-400">
+                        {s.note || <span className="text-gray-600">—</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -88,7 +273,7 @@ export default function PoliticianProfile() {
             <p className="text-gray-500 text-sm">Not drafted in any league.</p>
           ) : (
             <div className="space-y-3">
-              {politician.draftPicks.map((dp: any) => (
+              {politician.draftPicks.map((dp) => (
                 <Link
                   key={dp.id}
                   to={`/leagues/${dp.leagueMember.league.id}`}

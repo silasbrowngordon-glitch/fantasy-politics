@@ -52,6 +52,8 @@ export default function AdminAiScoring() {
   const [streamProgress, setStreamProgress] = useState('');
   const [saving, setSaving] = useState(false);
   const [loadingPols, setLoadingPols] = useState(true);
+  const [fetchingNews, setFetchingNews] = useState(false);
+  const [fetchStatus, setFetchStatus] = useState('');
   const streamBuffer = useRef('');
 
   useEffect(() => {
@@ -60,6 +62,71 @@ export default function AdminAiScoring() {
       .catch(() => toast.error('Failed to load politicians'))
       .finally(() => setLoadingPols(false));
   }, []);
+
+  async function handleFetchNews() {
+    const newsApiKey = import.meta.env.VITE_NEWS_API_KEY;
+    if (!newsApiKey) {
+      toast.error('VITE_NEWS_API_KEY is not set');
+      return;
+    }
+
+    setFetchingNews(true);
+    setFetchStatus('Fetching top politics headlines...');
+
+    const queries = [
+      {
+        label: 'top US politics headlines',
+        url: `https://newsapi.org/v2/top-headlines?country=us&category=politics&pageSize=100&apiKey=${newsApiKey}`,
+      },
+      {
+        label: 'Congress / Senate / House coverage',
+        url: `https://newsapi.org/v2/everything?q=congress+senator+representative&language=en&sortBy=publishedAt&pageSize=100&apiKey=${newsApiKey}`,
+      },
+      {
+        label: 'scandals and investigations',
+        url: `https://newsapi.org/v2/everything?q=politician+investigation+indicted+resign+scandal&language=en&sortBy=publishedAt&pageSize=100&apiKey=${newsApiKey}`,
+      },
+    ];
+
+    try {
+      const seenUrls = new Set<string>();
+      const lines: string[] = [];
+
+      for (const q of queries) {
+        setFetchStatus(`Fetching ${q.label}...`);
+        const res = await fetch(q.url);
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.message || `NewsAPI error ${res.status} on "${q.label}"`);
+        }
+        const json = await res.json();
+        const articles: Array<{ url: string; title?: string; description?: string }> =
+          json.articles ?? [];
+
+        for (const article of articles) {
+          if (!article.url || seenUrls.has(article.url)) continue;
+          seenUrls.add(article.url);
+          const title = article.title?.trim() ?? '';
+          const desc = article.description?.trim() ?? '';
+          if (!title && !desc) continue;
+          lines.push(desc ? `${title} — ${desc}` : title);
+        }
+      }
+
+      if (lines.length === 0) {
+        toast.error('No articles returned from NewsAPI');
+        return;
+      }
+
+      setNewsText(lines.join('\n'));
+      toast.success(`Fetched ${lines.length} unique articles from NewsAPI`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to fetch news');
+    } finally {
+      setFetchingNews(false);
+      setFetchStatus('');
+    }
+  }
 
   async function handleGenerate() {
     if (!newsText.trim()) {
@@ -213,7 +280,26 @@ Only include politicians who appear in the news with non-zero scores, plus any w
           </div>
         </div>
 
-        <label className="label">Today's News Headlines / Summary</label>
+        <div className="flex items-center justify-between mb-1">
+          <label className="label !mb-0">Today's News Headlines / Summary</label>
+          <button
+            onClick={handleFetchNews}
+            disabled={fetchingNews || streaming}
+            className="btn-secondary text-sm px-4 py-1.5 flex items-center gap-2"
+          >
+            {fetchingNews ? (
+              <>
+                <LoadingSpinner size="sm" />
+                <span>{fetchStatus || 'Fetching...'}</span>
+              </>
+            ) : (
+              <>
+                <span>📰</span>
+                <span>Fetch Today's News</span>
+              </>
+            )}
+          </button>
+        </div>
         <textarea
           className="input w-full h-48 resize-y font-mono text-sm"
           placeholder={`Paste today's political news here. For example:\n\n- Senate passed the infrastructure bill 67-32 with bipartisan support. Key vote by Sen. Joe Manchin.\n- Rep. Nancy Pelosi announced she will not seek re-election.\n- Gov. Ron DeSantis signed new education bill into law.\n- Rep. George Santos faces new ethics investigation...`}
