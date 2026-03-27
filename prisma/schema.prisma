@@ -25,6 +25,15 @@ enum DraftStatus {
   COMPLETE
 }
 
+enum ScoringType {
+  DEMOCRAT
+  REPUBLICAN
+  MEDIA_CHAOS
+  INDEPENDENT
+  INFLUENCE
+  PUNDIT_CHAOS
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -38,47 +47,49 @@ model User {
 }
 
 model League {
-  id         String      @id @default(cuid())
-  name       String
-  inviteCode String      @unique
-  maxMembers Int         @default(10)
-  rosterSize Int         @default(10)
-  starterSize Int        @default(8)
-  draftStatus DraftStatus @default(PREDRAFT)
-  isActive   Boolean     @default(true)
-  createdAt  DateTime    @default(now())
+  id           String        @id @default(cuid())
+  name         String
+  inviteCode   String        @unique
+  maxMembers   Int           @default(10)
+  rosterSize   Int           @default(10)
+  starterSize  Int           @default(8)
+  draftStatus  DraftStatus   @default(PREDRAFT)
+  scoringTypes ScoringType[]
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
 
-  members    LeagueMember[]
-  draftPicks DraftPick[]
+  members     LeagueMember[]
+  draftPicks  DraftPick[]
+  dailyScores DailyScore[]
 }
 
 model LeagueMember {
-  id         String   @id @default(cuid())
-  userId     String
-  leagueId   String
-  teamName   String
-  draftOrder Int?
-  isCommissioner Boolean @default(false)
-  createdAt  DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  leagueId       String
+  teamName       String
+  draftOrder     Int?
+  isCommissioner Boolean  @default(false)
+  createdAt      DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id])
-  league     League   @relation(fields: [leagueId], references: [id])
-  draftPicks DraftPick[]
-  dailyTotals LeagueMemberDailyTotal[]
+  user           User                    @relation(fields: [userId], references: [id])
+  league         League                  @relation(fields: [leagueId], references: [id])
+  draftPicks     DraftPick[]
+  dailyTotals    LeagueMemberDailyTotal[]
   startingLineup StartingLineup[]
 
   @@unique([userId, leagueId])
 }
 
 model Politician {
-  id       String  @id @default(cuid())
-  name     String
-  title    String
-  party    Party
-  state    String
-  imageUrl String?
-  bio      String?
-  isActive Boolean @default(true)
+  id        String  @id @default(cuid())
+  name      String
+  title     String
+  party     Party
+  state     String
+  imageUrl  String?
+  bio       String?
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
   draftPicks  DraftPick[]
@@ -117,12 +128,14 @@ model DailyScore {
   date         DateTime @db.Date
   points       Float
   note         String?
+  leagueId     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   politician Politician @relation(fields: [politicianId], references: [id])
+  league     League?    @relation(fields: [leagueId], references: [id])
 
-  @@unique([politicianId, date])
+  @@index([politicianId, date, leagueId])
 }
 
 model LeagueMemberDailyTotal {

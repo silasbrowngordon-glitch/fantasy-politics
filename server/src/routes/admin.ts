@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { requireAdmin, AuthRequest } from '../middleware/auth';
-import { type DailyScore, type Politician, type DraftPick, type StartingLineup } from '@prisma/client';
+import { type DraftPick, type StartingLineup } from '@prisma/client';
 import prisma from '../lib/prisma';
 import multer from 'multer';
 import { parse } from 'csv-parse/sync';
@@ -74,17 +74,20 @@ router.post('/politicians/bulk-import', upload.single('file'), async (req: AuthR
 router.get('/scores', async (req: AuthRequest, res: Response) => {
   const dateStr = (req.query.date as string) || new Date().toISOString().split('T')[0];
   const date = new Date(dateStr + 'T00:00:00.000Z');
+  const leagueId = (req.query.leagueId as string) || null;
 
   const politicians = await prisma.politician.findMany({
     where: { isActive: true },
     orderBy: { name: 'asc' },
   });
 
-  const scores = await prisma.dailyScore.findMany({ where: { date } });
+  const scores = await prisma.dailyScore.findMany({
+    where: { date, leagueId },
+  });
 
-  const scoreMap = new Map(scores.map((s: DailyScore) => [s.politicianId, s]));
+  const scoreMap = new Map(scores.map((s) => [s.politicianId, s]));
 
-  const rows = politicians.map((p: Politician) => ({
+  const rows = politicians.map((p) => ({
     ...p,
     score: scoreMap.get(p.id) ?? null,
   }));
@@ -93,9 +96,10 @@ router.get('/scores', async (req: AuthRequest, res: Response) => {
 });
 
 router.post('/scores', async (req: AuthRequest, res: Response) => {
-  const { date, scores } = req.body as {
+  const { date, scores, leagueId } = req.body as {
     date: string;
     scores: Array<{ politicianId: string; points: number; note?: string }>;
+    leagueId?: string;
   };
 
   if (!date || !Array.isArray(scores)) {
@@ -103,27 +107,51 @@ router.post('/scores', async (req: AuthRequest, res: Response) => {
   }
 
   const parsedDate = new Date(date + 'T00:00:00.000Z');
+  const resolvedLeagueId = leagueId || null;
 
-  // Upsert all scores
-  await prisma.$transaction(
-    scores.map((s) =>
-      prisma.dailyScore.upsert({
-        where: { politicianId_date: { politicianId: s.politicianId, date: parsedDate } },
-        create: { politicianId: s.politicianId, date: parsedDate, points: s.points, note: s.note },
-        update: { points: s.points, note: s.note },
-      })
-    )
-  );
+  // Use interactive transaction for findFirst + create/update pattern
+  // (needed because leagueId is nullable — upsert requires a known unique constraint name)
+  await prisma.$transaction(async (tx) => {
+    for (const s of scores) {
+      const existing = await tx.dailyScore.findFirst({
+        where: {
+          politicianId: s.politicianId,
+          date: parsedDate,
+          leagueId: resolvedLeagueId,
+        },
+      });
+
+      if (existing) {
+        await tx.dailyScore.update({
+          where: { id: existing.id },
+          data: { points: s.points, note: s.note },
+        });
+      } else {
+        await tx.dailyScore.create({
+          data: {
+            politicianId: s.politicianId,
+            date: parsedDate,
+            points: s.points,
+            note: s.note,
+            leagueId: resolvedLeagueId,
+          },
+        });
+      }
+    }
+  });
 
   // Recalculate LeagueMemberDailyTotals for this date
-  await recalculateDailyTotals(parsedDate);
+  await recalculateDailyTotals(parsedDate, resolvedLeagueId ?? undefined);
 
   return res.json({ message: 'Scores saved', count: scores.length, updatedAt: new Date() });
 });
 
-async function recalculateDailyTotals(date: Date) {
+async function recalculateDailyTotals(date: Date, targetLeagueId?: string) {
   const leagues = await prisma.league.findMany({
-    where: { draftStatus: 'COMPLETE' },
+    where: {
+      draftStatus: 'COMPLETE',
+      ...(targetLeagueId ? { id: targetLeagueId } : {}),
+    },
     include: {
       members: {
         include: {
@@ -134,11 +162,22 @@ async function recalculateDailyTotals(date: Date) {
     },
   });
 
-  const scores = await prisma.dailyScore.findMany({ where: { date } });
-  const scoreMap = new Map(scores.map((s: DailyScore) => [s.politicianId, s.points]));
-
-  const upserts = [];
   for (const league of leagues) {
+    // Include global scores (leagueId IS NULL) and league-specific scores
+    const scores = await prisma.dailyScore.findMany({
+      where: {
+        date,
+        OR: [{ leagueId: null }, { leagueId: league.id }],
+      },
+    });
+
+    // Sum scores per politician (global + league-specific stack)
+    const scoreMap = new Map<string, number>();
+    for (const s of scores) {
+      scoreMap.set(s.politicianId, (scoreMap.get(s.politicianId) ?? 0) + s.points);
+    }
+
+    const upserts = [];
     for (const member of league.members) {
       const starterIds = new Set(member.startingLineup.map((sl: StartingLineup) => sl.politicianId));
       const rosterIds = member.draftPicks.map((dp: DraftPick) => dp.politicianId);
@@ -153,9 +192,9 @@ async function recalculateDailyTotals(date: Date) {
         })
       );
     }
-  }
 
-  await prisma.$transaction(upserts);
+    await prisma.$transaction(upserts);
+  }
 }
 
 // ─── LEAGUES ──────────────────────────────────────────────────────────────────

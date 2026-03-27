@@ -27,7 +27,7 @@ router.get('/', requireAuth, async (req: AuthRequest, res: Response) => {
 
 // POST /api/leagues — create league
 router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
-  const { name, teamName, maxMembers } = req.body;
+  const { name, teamName, maxMembers, scoringTypes } = req.body;
 
   if (!name || !teamName) {
     return res.status(400).json({ error: 'League name and team name are required' });
@@ -39,11 +39,17 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
     inviteCode = generateInviteCode();
   }
 
+  const validScoringTypes = ['DEMOCRAT', 'REPUBLICAN', 'MEDIA_CHAOS', 'INDEPENDENT', 'INFLUENCE', 'PUNDIT_CHAOS'];
+  const parsedScoringTypes = Array.isArray(scoringTypes)
+    ? scoringTypes.filter((t: string) => validScoringTypes.includes(t))
+    : [];
+
   const league = await prisma.league.create({
     data: {
       name,
       inviteCode,
       maxMembers: maxMembers || 10,
+      scoringTypes: parsedScoringTypes,
       members: {
         create: {
           userId: req.user!.id,

@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { SCORING_TYPES } from '../lib/scoringTypes';
 
-const POSITIVE = [
-  { pts: '+5',  label: 'Major floor vote or key legislation passed' },
-  { pts: '+3',  label: 'Speech, press conference, or policy announcement' },
-  { pts: '+3',  label: 'Bipartisan cooperation or cross-aisle action' },
-  { pts: '+2',  label: 'Committee action (hearing, subpoena, markup)' },
+const STANDARD_POINTS = [
+  { pts: '+5',   label: 'Major floor vote or key legislation passed' },
+  { pts: '+3',   label: 'Speech, press conference, or policy announcement' },
+  { pts: '+3',   label: 'Bipartisan cooperation or cross-aisle action' },
+  { pts: '+2',   label: 'Committee action (hearing, subpoena, markup)' },
   { pts: '+1–3', label: 'Positive news coverage or notable accomplishment' },
-  { pts: '+2',  label: 'Breaking with your own party on a vote or issue' },
+  { pts: '+2',   label: 'Breaking with your own party on a vote or issue' },
 ];
 
-const CHAOS = [
+const CHAOS_BONUS = [
   { pts: '+3',  label: 'Fact-check loss (major claim rated false/misleading)' },
   { pts: '+5',  label: 'Major gaffe or public embarrassment' },
   { pts: '+8',  label: 'Ethics controversy or investigation launched' },
   { pts: '+10', label: 'Indictment or resignation' },
 ];
 
-function Table({ rows, accent }: { rows: { pts: string; label: string }[]; accent: string }) {
+function ScoreTable({ rows, accent }: { rows: { pts: string; label: string }[]; accent: string }) {
   return (
     <table className="w-full">
       <tbody>
@@ -34,38 +35,98 @@ function Table({ rows, accent }: { rows: { pts: string; label: string }[]; accen
 }
 
 export default function Scoring() {
+  const [openType, setOpenType] = useState<string | null>(null);
+
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="font-display text-4xl font-bold text-white">Scoring Rules</h1>
-        <p className="text-cream-400 mt-2">
+    <div className="max-w-3xl mx-auto">
+      <div className="mb-10">
+        <div className="overline mb-2">Game Rules</div>
+        <h1 className="font-display font-extrabold uppercase text-5xl text-cream-100 leading-none mb-3"
+            style={{ letterSpacing: '-0.01em' }}>
+          Scoring Rules
+        </h1>
+        <p className="text-cream-400 text-sm max-w-xl">
           Points are assigned daily by the game administrator based on each politician's news coverage.
-          Scores are final once published.
+          Scores are final once published. League-specific scoring types add bonus rules on top of the standard ruleset.
         </p>
       </div>
 
-      <div className="card mb-6">
-        <h2 className="text-xl font-bold text-white mb-1">Standard Points</h2>
-        <p className="text-sm text-cream-500 mb-4">Earned through legislative activity and media presence.</p>
-        <Table rows={POSITIVE} accent="text-green-400" />
+      {/* Standard Points */}
+      <div className="card mb-4">
+        <h2 className="font-display font-bold uppercase text-xl text-cream-100 mb-1 tracking-wide">
+          Standard Points
+        </h2>
+        <p className="text-sm text-cream-500 mb-4">Applies to all leagues. Earned through legislative activity and media presence.</p>
+        <ScoreTable rows={STANDARD_POINTS} accent="text-green-400" />
       </div>
 
-      <div className="card mb-6" style={{ borderColor: 'rgba(204,41,54,0.4)' }}>
-        <h2 className="text-xl font-bold text-white mb-1">
-          Chaos Bonus <span className="ml-2 text-xs bg-gold-400 text-ink-900 px-2 py-0.5 rounded font-bold">NEW</span>
-        </h2>
+      {/* Chaos Bonus */}
+      <div className="card mb-8" style={{ borderColor: 'rgba(196,30,58,0.4)' }}>
+        <div className="flex items-center gap-3 mb-1">
+          <h2 className="font-display font-bold uppercase text-xl text-cream-100 tracking-wide">
+            Chaos Bonus
+          </h2>
+          <span className="text-xs bg-gold-400 text-ink-900 px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide">
+            All Leagues
+          </span>
+        </div>
         <p className="text-sm text-cream-500 mb-4">
           Controversy pays. Drama, gaffes, and scandals all score — chaos is rewarded.
         </p>
-        <Table rows={CHAOS} accent="text-gold-400" />
+        <ScoreTable rows={CHAOS_BONUS} accent="text-gold-400" />
       </div>
 
+      {/* League-Specific Scoring Types */}
+      <div className="mb-6">
+        <div className="overline mb-3">Optional Scoring Types</div>
+        <h2 className="font-display font-bold uppercase text-2xl text-cream-100 mb-2" style={{ letterSpacing: '-0.01em' }}>
+          League Scoring Types
+        </h2>
+        <p className="text-cream-400 text-sm mb-6">
+          When creating a league, commissioners can add scoring types that layer bonus rules on top of the standard ruleset.
+        </p>
+        <div className="space-y-3">
+          {SCORING_TYPES.map((t) => {
+            const isOpen = openType === t.value;
+            return (
+              <div key={t.value} className="card overflow-hidden">
+                <button
+                  className="w-full flex items-center justify-between text-left"
+                  onClick={() => setOpenType(isOpen ? null : t.value)}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`text-xs px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide border ${t.badgeColor}`}>
+                      {t.label}
+                    </span>
+                    <span className="text-cream-300 text-sm">{t.description}</span>
+                  </div>
+                  <svg
+                    className={`w-4 h-4 text-cream-500 shrink-0 ml-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isOpen && (
+                  <div className="mt-4 pt-4 border-t border-ink-700">
+                    <ScoreTable rows={t.rows} accent="text-gold-400" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Notes */}
       <div className="card bg-ink-800/50">
-        <h2 className="text-lg font-bold text-white mb-3">Notes</h2>
+        <h2 className="font-display font-bold uppercase text-sm tracking-widest text-cream-300 mb-3">Notes</h2>
         <ul className="text-sm text-cream-400 space-y-2 list-disc list-inside">
           <li>A politician must appear in the news to receive any points that day.</li>
-          <li>Points can stack — a politician can earn both a gaffe bonus and a vote bonus on the same day.</li>
+          <li>Points can stack — a politician can earn a gaffe bonus and a vote bonus on the same day.</li>
           <li>Breaking with your party only scores if the vote or action is newsworthy.</li>
+          <li>League scoring type bonuses stack with standard points.</li>
           <li>The administrator's score decisions are final.</li>
         </ul>
       </div>

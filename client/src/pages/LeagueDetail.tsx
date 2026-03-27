@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuth } from '../lib/auth';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { SCORING_TYPE_MAP, type ScoringType } from '../lib/scoringTypes';
 
 export default function LeagueDetail() {
   const { id } = useParams<{ id: string }>();
@@ -34,16 +35,24 @@ export default function LeagueDetail() {
             <Link to="/leagues" className="hover:text-cream-300">Leagues</Link> / {league.name}
           </div>
           <h1 className="font-display text-4xl font-bold text-white">{league.name}</h1>
-          <div className="flex items-center gap-3 mt-2">
-            <span className={`text-xs px-2 py-0.5 rounded font-bold ${
-              league.draftStatus === 'COMPLETE' ? 'bg-green-900 text-green-300' :
-              league.draftStatus === 'DRAFTING' ? 'bg-yellow-900 text-yellow-300' :
-              'bg-ink-700 text-cream-400'
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <span className={`text-xs px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide ${
+              league.draftStatus === 'COMPLETE' ? 'bg-green-950 text-green-400 border border-green-900' :
+              league.draftStatus === 'DRAFTING' ? 'bg-yellow-950 text-yellow-400 border border-yellow-900' :
+              'bg-ink-600 text-cream-500 border border-ink-500'
             }`}>{league.draftStatus}</span>
             <span className="text-sm text-cream-400">{league.members.length}/{league.maxMembers} members</span>
             <span className="text-sm text-cream-400">
               Invite: <code className="text-gold-500 font-mono font-bold">{league.inviteCode}</code>
             </span>
+            {(league.scoringTypes ?? []).map((t: ScoringType) => {
+              const info = SCORING_TYPE_MAP.get(t);
+              return (
+                <span key={t} className={`text-xs px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide border ${info?.badgeColor ?? 'bg-ink-600 text-cream-400 border-ink-500'}`}>
+                  {info?.label ?? t}
+                </span>
+              );
+            })}
           </div>
         </div>
         <div className="flex gap-3">

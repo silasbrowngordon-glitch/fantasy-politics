@@ -4,6 +4,7 @@ import api from '../../lib/api';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import PartyBadge from '../../components/PartyBadge';
+import { buildScoringRubric, type ScoringType } from '../../lib/scoringTypes';
 
 interface Politician {
   id: string;
@@ -13,6 +14,12 @@ interface Politician {
   state: string;
 }
 
+interface League {
+  id: string;
+  name: string;
+  scoringTypes: ScoringType[];
+}
+
 interface ScoreResult {
   politicianId: string;
   name: string;
@@ -20,40 +27,12 @@ interface ScoreResult {
   note: string;
 }
 
-const SCORING_RUBRIC = `
-You are a Fantasy Politics scoring assistant. Given today's political news, assign point scores to politicians.
-
-SCORING RUBRIC:
-
-Standard Points (legislative activity and media presence):
-- Major floor vote or key legislation passed: +5
-- Speech, press conference, or policy announcement: +3
-- Bipartisan cooperation or cross-aisle action: +3
-- Committee action (hearing, subpoena, markup): +2
-- Positive news coverage or notable accomplishment: +1 to +3
-- Breaking with their own party on a vote or issue: +2 (only if newsworthy)
-
-Chaos Bonus (controversy is rewarded, not punished):
-- Fact-check loss (major claim rated false or misleading): +3
-- Major gaffe or public embarrassment: +5
-- Ethics controversy or investigation launched: +8
-- Indictment or resignation: +10
-
-IMPORTANT RULES:
-- There are NO negative scores. All point values are zero or positive.
-- Winning committee votes or leading a coalition does NOT score unless the politician is breaking with their own party.
-- There are no Institutional Power Bonuses of any kind.
-- Points can stack — a politician can earn both a Chaos Bonus and Standard Points on the same day.
-- Only score politicians who appear in the news. Omit those with 0 points entirely.
-- Be fair and consistent across parties.
-- Points should be whole numbers.
-- The "note" should be a brief (10 words max) reason.
-`;
-
 export default function AdminAiScoring() {
   const today = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(today);
   const [politicians, setPoliticians] = useState<Politician[]>([]);
+  const [leagues, setLeagues] = useState<League[]>([]);
+  const [selectedLeagueId, setSelectedLeagueId] = useState<string>('');
   const [newsText, setNewsText] = useState('');
   const [results, setResults] = useState<ScoreResult[]>([]);
   const [streaming, setStreaming] = useState(false);
@@ -61,19 +40,24 @@ export default function AdminAiScoring() {
   const [saving, setSaving] = useState(false);
   const [loadingPols, setLoadingPols] = useState(true);
   const [fetchingNews, setFetchingNews] = useState(false);
-  const [fetchStatus, setFetchStatus] = useState('');
   const streamBuffer = useRef('');
 
   useEffect(() => {
-    api.get('/politicians', { params: { limit: 500 } })
-      .then((r) => setPoliticians(r.data.politicians ?? r.data))
-      .catch(() => toast.error('Failed to load politicians'))
+    Promise.all([
+      api.get('/politicians', { params: { limit: 500 } }),
+      api.get('/admin/leagues'),
+    ]).then(([polRes, leagueRes]) => {
+      setPoliticians(polRes.data.politicians ?? polRes.data);
+      setLeagues(leagueRes.data.leagues ?? []);
+    }).catch(() => toast.error('Failed to load data'))
       .finally(() => setLoadingPols(false));
   }, []);
 
+  const selectedLeague = leagues.find((l) => l.id === selectedLeagueId);
+  const activeScoringTypes: ScoringType[] = selectedLeague?.scoringTypes ?? [];
+
   async function handleFetchNews() {
     setFetchingNews(true);
-    setFetchStatus('Fetching news...');
     try {
       const r = await api.get('/news/fetch');
       const articles: Array<{ title: string; description: string }> = r.data.articles ?? [];
@@ -90,7 +74,6 @@ export default function AdminAiScoring() {
       toast.error(err.response?.data?.error || err.message || 'Failed to fetch news');
     } finally {
       setFetchingNews(false);
-      setFetchStatus('');
     }
   }
 
@@ -110,11 +93,18 @@ export default function AdminAiScoring() {
     setStreamProgress('');
     streamBuffer.current = '';
 
+    const rubric = buildScoringRubric(activeScoringTypes);
+
     const polList = politicians
       .map((p) => `- ${p.name} (${p.id}) — ${p.title}, ${p.state}, ${p.party}`)
       .join('\n');
 
-    const prompt = `${SCORING_RUBRIC}
+    const leagueNote = selectedLeague
+      ? `\nThis scoring is for league: "${selectedLeague.name}" with scoring types: ${activeScoringTypes.join(', ') || 'standard only'}.`
+      : '\nThis is a global score (no specific league).';
+
+    const prompt = `${rubric}
+${leagueNote}
 
 ACTIVE POLITICIANS LIST (use the exact IDs provided):
 ${polList}
@@ -125,10 +115,10 @@ ${newsText}
 Return ONLY a JSON array. No markdown, no explanation. Each entry must have:
 - "politicianId": exact ID from the list above
 - "name": politician's full name
-- "points": numeric score (0 if not in the news)
-- "note": brief reason (or "No notable news" if 0)
+- "points": numeric score (whole number, 0 or positive only)
+- "note": brief reason (10 words max)
 
-Only include politicians who appear in the news with non-zero scores, plus any with notable mentions. Omit politicians with 0 points who are completely absent from the news.`;
+Only include politicians who appear in the news with non-zero scores. Omit politicians with 0 points who are completely absent from the news.`;
 
     try {
       const client = new Anthropic({
@@ -137,7 +127,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
       });
 
       const stream = client.messages.stream({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }],
       });
@@ -153,7 +143,6 @@ Only include politicians who appear in the news with non-zero scores, plus any w
         }
       }
 
-      // Parse the JSON response
       const raw = streamBuffer.current.trim();
       const jsonStart = raw.indexOf('[');
       const jsonEnd = raw.lastIndexOf(']');
@@ -191,9 +180,6 @@ Only include politicians who appear in the news with non-zero scores, plus any w
       return;
     }
 
-    // Only submit rows whose politicianId actually exists in the DB.
-    // Unmatched IDs would cause the entire Prisma transaction to fail with a
-    // foreign key constraint error.
     const valid = results.filter((r) => polMap.has(r.politicianId));
     const skipped = results.length - valid.length;
 
@@ -209,10 +195,14 @@ Only include politicians who appear in the news with non-zero scores, plus any w
         points: r.points,
         note: r.note || undefined,
       }));
-      await api.post('/admin/scores', { date, scores });
+      await api.post('/admin/scores', {
+        date,
+        scores,
+        leagueId: selectedLeagueId || undefined,
+      });
       const msg = skipped > 0
-        ? `Saved ${scores.length} scores for ${date} (${skipped} unmatched row${skipped > 1 ? 's' : ''} skipped)`
-        : `Saved ${scores.length} scores for ${date}!`;
+        ? `Saved ${scores.length} scores${selectedLeague ? ` for ${selectedLeague.name}` : ''} (${skipped} unmatched skipped)`
+        : `Saved ${scores.length} scores${selectedLeague ? ` for ${selectedLeague.name}` : ''}!`;
       toast.success(msg);
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Failed to save scores');
@@ -225,10 +215,12 @@ Only include politicians who appear in the news with non-zero scores, plus any w
     <div>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 text-xs font-bold px-3 py-1 rounded-full mb-2">
-            ADMIN · AI
+          <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-400 text-xs font-display font-bold uppercase tracking-widest px-3 py-1 rounded-sm mb-2">
+            Admin · AI
           </div>
-          <h1 className="font-display text-4xl font-bold text-white">AI Score Generator</h1>
+          <h1 className="font-display font-extrabold uppercase text-5xl text-cream-100 leading-none" style={{ letterSpacing: '-0.01em' }}>
+            AI Score Generator
+          </h1>
           <p className="text-cream-400 mt-1 text-sm">
             Paste today's news headlines and let Claude assign scores automatically.
           </p>
@@ -237,16 +229,16 @@ Only include politicians who appear in the news with non-zero scores, plus any w
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="btn-primary text-lg px-8 py-3"
+            className="btn-primary text-base px-8 py-3"
           >
             {saving ? 'Saving...' : `Submit ${results.length} Scores`}
           </button>
         )}
       </div>
 
-      {/* Date + news input */}
+      {/* Controls */}
       <div className="card mb-6">
-        <div className="flex gap-4 items-end mb-4">
+        <div className="flex flex-wrap gap-4 items-end mb-5">
           <div>
             <label className="label">Score Date</label>
             <input
@@ -256,10 +248,36 @@ Only include politicians who appear in the news with non-zero scores, plus any w
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
+          <div className="flex-1 min-w-48">
+            <label className="label">Target League <span className="text-cream-500 font-normal normal-case tracking-normal text-xs ml-1">(optional)</span></label>
+            <select
+              className="input"
+              value={selectedLeagueId}
+              onChange={(e) => setSelectedLeagueId(e.target.value)}
+            >
+              <option value="">Global (all leagues)</option>
+              {leagues.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}{l.scoringTypes?.length ? ` · ${l.scoringTypes.map((t) => t.replace('_', ' ')).join(', ')}` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="text-sm text-cream-500">
-            {loadingPols ? 'Loading politicians...' : `${politicians.length} politicians loaded`}
+            {loadingPols ? 'Loading...' : `${politicians.length} politicians`}
           </div>
         </div>
+
+        {activeScoringTypes.length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-2 items-center">
+            <span className="text-xs text-cream-500 font-display uppercase tracking-widest">Active rubrics:</span>
+            {activeScoringTypes.map((t) => (
+              <span key={t} className="text-xs px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide bg-gold-400/15 text-gold-300 border border-gold-400/30">
+                {t.replace('_', ' ')}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center justify-between mb-1">
           <label className="label !mb-0">Today's News Headlines / Summary</label>
@@ -271,19 +289,16 @@ Only include politicians who appear in the news with non-zero scores, plus any w
             {fetchingNews ? (
               <>
                 <LoadingSpinner size="sm" />
-                <span>{fetchStatus || 'Fetching...'}</span>
+                <span>Fetching...</span>
               </>
             ) : (
-              <>
-                <span>📰</span>
-                <span>Fetch Today's News</span>
-              </>
+              'Fetch Today\'s News'
             )}
           </button>
         </div>
         <textarea
           className="input w-full h-48 resize-y font-mono text-sm"
-          placeholder={`Paste today's political news here. For example:\n\n- Senate passed the infrastructure bill 67-32 with bipartisan support. Key vote by Sen. Joe Manchin.\n- Rep. Nancy Pelosi announced she will not seek re-election.\n- Gov. Ron DeSantis signed new education bill into law.\n- Rep. George Santos faces new ethics investigation...`}
+          placeholder={`Paste today's political news here...\n\n- Senate passed the infrastructure bill 67-32 with bipartisan support...\n- Rep. Nancy Pelosi announced she will not seek re-election...\n- Gov. Ron DeSantis signed new education bill into law...`}
           value={newsText}
           onChange={(e) => setNewsText(e.target.value)}
         />
@@ -300,7 +315,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
                 Generating...
               </span>
             ) : (
-              '✨ Generate Scores'
+              'Generate Scores'
             )}
           </button>
           {streaming && streamProgress && (
@@ -315,10 +330,16 @@ Only include politicians who appear in the news with non-zero scores, plus any w
       {results.length > 0 && (
         <div className="card overflow-x-auto">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-white text-lg">
-              Generated Scores
-              <span className="ml-2 text-sm text-cream-400 font-normal">— edit before submitting</span>
-            </h2>
+            <div>
+              <h2 className="font-display font-bold uppercase text-xl text-cream-100 tracking-wide">
+                Generated Scores
+              </h2>
+              {selectedLeague && (
+                <p className="text-sm text-cream-400 mt-0.5">
+                  For: <span className="text-gold-400">{selectedLeague.name}</span>
+                </p>
+              )}
+            </div>
             <span className="text-sm text-cream-400">{results.length} politicians scored</span>
           </div>
           <table className="w-full">
@@ -334,22 +355,16 @@ Only include politicians who appear in the news with non-zero scores, plus any w
             <tbody>
               {results.map((row, idx) => {
                 const pol = polMap.get(row.politicianId);
-                const pointsNum = row.points;
-                const pointsColor =
-                  pointsNum > 0
-                    ? 'text-green-400'
-                    : pointsNum < 0
-                    ? 'text-red-400'
-                    : 'text-cream-400';
+                const pointsColor = row.points > 0 ? 'text-green-400' : row.points < 0 ? 'text-red-400' : 'text-cream-400';
                 return (
                   <tr key={idx} className="table-row">
                     <td className="table-td">
-                      <div className="font-semibold text-white">{row.name}</div>
+                      <div className="font-semibold text-cream-100">{row.name}</div>
                       {pol && (
                         <div className="text-xs text-cream-500">{pol.title} · {pol.state}</div>
                       )}
                       {!pol && (
-                        <div className="text-xs text-red-400">⚠ ID not matched in DB</div>
+                        <div className="text-xs text-red-400">ID not matched in DB</div>
                       )}
                     </td>
                     <td className="table-td">
@@ -391,7 +406,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
             <button
               onClick={handleSubmit}
               disabled={saving}
-              className="btn-primary px-10 py-3 text-lg"
+              className="btn-primary px-10 py-3 text-base"
             >
               {saving ? 'Saving...' : `Submit ${results.length} Scores for ${date}`}
             </button>

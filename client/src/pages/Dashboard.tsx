@@ -174,17 +174,17 @@ export default function Dashboard() {
             </h2>
             <div className="space-y-1">
               {[
-                { to: '/leagues', icon: '🏟', label: 'My Leagues' },
-                { to: '/politicians', icon: '👤', label: 'Politician Directory' },
-                { to: '/scoring', icon: '📋', label: 'Scoring Rules' },
+                { to: '/leagues', label: 'My Leagues' },
+                { to: '/politicians', label: 'Politician Directory' },
+                { to: '/scoring', label: 'Scoring Rules' },
               ].map((l) => (
                 <Link
                   key={l.to}
                   to={l.to}
-                  className="flex items-center gap-3 py-2.5 text-cream-400 hover:text-gold-400 transition-colors border-b border-ink-700 last:border-0"
+                  className="flex items-center justify-between py-2.5 text-cream-400 hover:text-gold-400 transition-colors border-b border-ink-700 last:border-0"
                 >
-                  <span>{l.icon}</span>
                   <span className="text-xs font-display font-bold uppercase tracking-widest">{l.label}</span>
+                  <span className="text-gold-400 text-xs">→</span>
                 </Link>
               ))}
             </div>
