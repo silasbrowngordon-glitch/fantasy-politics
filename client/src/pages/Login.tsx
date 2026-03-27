@@ -33,13 +33,13 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-ink-600 bg-ink-800">
         <Link to="/" className="flex items-center gap-3">
           <Logo size={32} />
-          <span className="font-display font-700 uppercase tracking-widest text-cream-200 text-sm">
+          <span className="font-display font-bold uppercase tracking-widest text-cream-200 text-sm">
             Fantasy Politics
           </span>
         </Link>
         <div>
           <div className="overline mb-4">Season 2025</div>
-          <h2 className="font-display font-800 uppercase text-cream-100 leading-none mb-6"
+          <h2 className="font-display font-extrabold uppercase text-cream-100 leading-none mb-6"
               style={{ fontSize: '3.5rem', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
             Draft the<br />
             <span style={{ color: '#d4a843' }}>chaos.</span><br />
@@ -49,7 +49,7 @@ export default function Login() {
           <div className="flex gap-8 pt-8 border-t border-ink-600">
             {[{ v: '+10', l: 'Indictment' }, { v: '+8', l: 'Ethics Probe' }, { v: '+5', l: 'Gaffe' }].map((s) => (
               <div key={s.l}>
-                <div className="font-display font-800 text-3xl text-gold-400 leading-none">{s.v}</div>
+                <div className="font-display font-extrabold text-3xl text-gold-400 leading-none">{s.v}</div>
                 <div className="overline text-cream-500 mt-1">{s.l}</div>
               </div>
             ))}
@@ -65,7 +65,7 @@ export default function Login() {
           <div className="lg:hidden text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2">
               <Logo size={28} />
-              <span className="font-display font-700 uppercase tracking-widest text-cream-200 text-sm">
+              <span className="font-display font-bold uppercase tracking-widest text-cream-200 text-sm">
                 Fantasy Politics
               </span>
             </Link>
@@ -73,7 +73,7 @@ export default function Login() {
 
           <div className="mb-8">
             <div className="overline mb-2">Welcome Back</div>
-            <h1 className="font-display font-800 uppercase text-4xl text-cream-100"
+            <h1 className="font-display font-extrabold uppercase text-4xl text-cream-100"
                 style={{ letterSpacing: '-0.01em' }}>
               Sign In
             </h1>
@@ -110,7 +110,7 @@ export default function Login() {
           <div className="mt-8 pt-6 border-t border-ink-600 text-center">
             <p className="text-cream-400 text-sm">
               No account?{' '}
-              <Link to="/register" className="text-gold-400 font-display font-700 uppercase tracking-wide text-xs">
+              <Link to="/register" className="text-gold-400 font-display font-bold uppercase tracking-wide text-xs">
                 Create one
               </Link>
             </p>

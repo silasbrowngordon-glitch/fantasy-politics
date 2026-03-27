@@ -39,13 +39,13 @@ export default function Register() {
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-ink-600 bg-ink-800">
         <Link to="/" className="flex items-center gap-3">
           <Logo size={32} />
-          <span className="font-display font-700 uppercase tracking-widest text-cream-200 text-sm">
+          <span className="font-display font-bold uppercase tracking-widest text-cream-200 text-sm">
             Fantasy Politics
           </span>
         </Link>
         <div>
           <div className="overline mb-4">Join Season 2025</div>
-          <h2 className="font-display font-800 uppercase text-cream-100 leading-none mb-6"
+          <h2 className="font-display font-extrabold uppercase text-cream-100 leading-none mb-6"
               style={{ fontSize: '3.5rem', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
             Your roster<br />
             <span style={{ color: '#d4a843' }}>awaits.</span>
@@ -65,7 +65,7 @@ export default function Register() {
           <div className="lg:hidden text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2">
               <Logo size={28} />
-              <span className="font-display font-700 uppercase tracking-widest text-cream-200 text-sm">
+              <span className="font-display font-bold uppercase tracking-widest text-cream-200 text-sm">
                 Fantasy Politics
               </span>
             </Link>
@@ -73,7 +73,7 @@ export default function Register() {
 
           <div className="mb-8">
             <div className="overline mb-2">Get Started</div>
-            <h1 className="font-display font-800 uppercase text-4xl text-cream-100"
+            <h1 className="font-display font-extrabold uppercase text-4xl text-cream-100"
                 style={{ letterSpacing: '-0.01em' }}>
               Create Account
             </h1>
@@ -124,7 +124,7 @@ export default function Register() {
           <div className="mt-8 pt-6 border-t border-ink-600 text-center">
             <p className="text-cream-400 text-sm">
               Already have an account?{' '}
-              <Link to="/login" className="text-gold-400 font-display font-700 uppercase tracking-wide text-xs">
+              <Link to="/login" className="text-gold-400 font-display font-bold uppercase tracking-wide text-xs">
                 Sign in
               </Link>
             </p>

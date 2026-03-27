@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between h-14">
             <Link to="/dashboard" className="flex items-center gap-3 shrink-0">
               <Logo size={32} />
-              <span className="font-display font-700 uppercase tracking-widest text-cream-100 text-sm hidden sm:block">
+              <span className="font-display font-bold uppercase tracking-widest text-cream-100 text-sm hidden sm:block">
                 Fantasy Politics
               </span>
             </Link>
@@ -52,7 +52,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     key={link.to}
                     to={link.to}
                     className={`
-                      relative px-4 py-4 text-xs font-display font-700 uppercase tracking-widest
+                      relative px-4 py-4 text-xs font-display font-bold uppercase tracking-widest
                       transition-colors duration-150
                       ${active ? 'text-gold-400' : 'text-cream-400 hover:text-cream-100'}
                     `}
@@ -71,7 +71,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <span className="text-xs text-cream-400 font-display uppercase tracking-wide">
                 {user?.username}
                 {user?.role === 'ADMIN' && (
-                  <span className="ml-2 bg-gold-400 text-ink-900 px-1.5 py-0.5 rounded-sm font-700 text-xs">
+                  <span className="ml-2 bg-gold-400 text-ink-900 px-1.5 py-0.5 rounded-sm font-bold text-xs">
                     ADMIN
                   </span>
                 )}
@@ -103,7 +103,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link
                 key={link.to}
                 to={link.to}
-                className="block py-3 text-xs font-display font-700 uppercase tracking-widest text-cream-400 hover:text-gold-400 transition-colors border-b border-ink-700 last:border-0"
+                className="block py-3 text-xs font-display font-bold uppercase tracking-widest text-cream-400 hover:text-gold-400 transition-colors border-b border-ink-700 last:border-0"
                 onClick={() => setMenuOpen(false)}
                 style={{ letterSpacing: '0.1em' }}
               >

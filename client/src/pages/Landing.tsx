@@ -38,7 +38,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <Logo size={36} />
-            <span className="font-display text-xl font-700 uppercase tracking-widest text-cream-100">
+            <span className="font-display text-xl font-bold uppercase tracking-widest text-cream-100">
               Fantasy Politics
             </span>
           </Link>
@@ -54,7 +54,7 @@ export default function Landing() {
         <div className="max-w-4xl">
           <div className="overline mb-6">Season 2025 · Now Open</div>
 
-          <h1 className="font-display font-800 uppercase leading-none text-cream-100 mb-6"
+          <h1 className="font-display font-extrabold uppercase leading-none text-cream-100 mb-6"
               style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
             Draft the<br />
             <span style={{ color: '#d4a843' }}>Politicians.</span><br />
@@ -81,7 +81,7 @@ export default function Landing() {
         <div className="mt-16 pt-8 border-t border-ink-600 flex flex-wrap gap-12">
           {STATS.map((s) => (
             <div key={s.label}>
-              <div className="font-display font-800 uppercase text-4xl text-gold-400 leading-none">
+              <div className="font-display font-extrabold uppercase text-4xl text-gold-400 leading-none">
                 {s.value}
               </div>
               <div className="overline mt-1 text-cream-500">{s.label}</div>
@@ -92,7 +92,7 @@ export default function Landing() {
 
       {/* Gold divider ticker */}
       <div className="bg-gold-400 py-2 overflow-hidden">
-        <div className="flex gap-12 whitespace-nowrap font-display font-700 uppercase text-ink-900 text-sm tracking-widest px-6">
+        <div className="flex gap-12 whitespace-nowrap font-display font-bold uppercase text-ink-900 text-sm tracking-widest px-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <React.Fragment key={i}>
               <span>Draft · Vote · Score · Win</span>
@@ -105,7 +105,7 @@ export default function Landing() {
       {/* How it works */}
       <div className="max-w-6xl mx-auto px-6 py-24">
         <div className="overline mb-4">How It Works</div>
-        <h2 className="font-display font-800 uppercase text-5xl text-cream-100 mb-16"
+        <h2 className="font-display font-extrabold uppercase text-5xl text-cream-100 mb-16"
             style={{ letterSpacing: '-0.01em' }}>
           Three steps to glory
         </h2>
@@ -116,11 +116,11 @@ export default function Landing() {
               key={step.num}
               className={`p-8 ${i < STEPS.length - 1 ? 'border-b md:border-b-0 md:border-r border-ink-600' : ''}`}
             >
-              <div className="font-display font-800 text-6xl leading-none mb-4"
+              <div className="font-display font-extrabold text-6xl leading-none mb-4"
                    style={{ color: '#2e2e3d' }}>
                 {step.num}
               </div>
-              <h3 className="font-display font-700 uppercase text-2xl text-cream-100 mb-3"
+              <h3 className="font-display font-bold uppercase text-2xl text-cream-100 mb-3"
                   style={{ letterSpacing: '0.02em' }}>
                 {step.title}
               </h3>
@@ -135,7 +135,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <div>
             <div className="overline mb-3" style={{ color: '#c41e3a' }}>New This Season</div>
-            <h2 className="font-display font-800 uppercase text-4xl text-cream-100 leading-tight"
+            <h2 className="font-display font-extrabold uppercase text-4xl text-cream-100 leading-tight"
                 style={{ letterSpacing: '-0.01em' }}>
               Chaos Bonus.<br />
               <span style={{ color: '#d4a843' }}>Scandal pays.</span>
@@ -148,7 +148,7 @@ export default function Landing() {
               { pts: '+10', label: 'Indictment' },
             ].map((b) => (
               <div key={b.label} className="text-center">
-                <div className="font-display font-800 text-4xl text-gold-400 leading-none">{b.pts}</div>
+                <div className="font-display font-extrabold text-4xl text-gold-400 leading-none">{b.pts}</div>
                 <div className="overline mt-1 text-cream-500">{b.label}</div>
               </div>
             ))}
@@ -163,7 +163,7 @@ export default function Landing() {
       <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-ink-600 mt-0">
         <div className="flex items-center gap-3">
           <Logo size={28} />
-          <span className="font-display font-700 uppercase tracking-widest text-cream-400 text-sm">
+          <span className="font-display font-bold uppercase tracking-widest text-cream-400 text-sm">
             Fantasy Politics
           </span>
         </div>

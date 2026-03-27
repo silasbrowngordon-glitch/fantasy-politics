@@ -58,7 +58,7 @@ export default function Dashboard() {
     <div>
       <div className="mb-10">
         <div className="overline mb-2">Your Dashboard</div>
-        <h1 className="font-display font-800 uppercase text-5xl text-cream-100 leading-none"
+        <h1 className="font-display font-extrabold uppercase text-5xl text-cream-100 leading-none"
             style={{ letterSpacing: '-0.01em' }}>
           Welcome back,{' '}
           <span style={{ color: '#d4a843' }}>{user?.username}</span>
@@ -70,10 +70,10 @@ export default function Dashboard() {
         {/* Leagues */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-display font-700 uppercase text-lg text-cream-200 tracking-widest">
+            <h2 className="font-display font-bold uppercase text-lg text-cream-200 tracking-widest">
               Your Leagues
             </h2>
-            <Link to="/leagues" className="text-gold-400 text-xs font-display font-700 uppercase tracking-widest hover:text-gold-300 transition-colors">
+            <Link to="/leagues" className="text-gold-400 text-xs font-display font-bold uppercase tracking-widest hover:text-gold-300 transition-colors">
               View All →
             </Link>
           </div>
@@ -81,7 +81,7 @@ export default function Dashboard() {
           {memberships.length === 0 ? (
             <div className="card text-center py-16">
               <div className="text-5xl mb-4">🗳️</div>
-              <h3 className="font-display font-700 uppercase text-2xl text-cream-100 mb-2">
+              <h3 className="font-display font-bold uppercase text-2xl text-cream-100 mb-2">
                 No Leagues Yet
               </h3>
               <p className="text-cream-400 mb-6 text-sm">Create or join a league to start playing.</p>
@@ -106,19 +106,19 @@ export default function Dashboard() {
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="font-display font-700 uppercase text-xl text-cream-100 group-hover:text-gold-400 transition-colors"
+                        <h3 className="font-display font-bold uppercase text-xl text-cream-100 group-hover:text-gold-400 transition-colors"
                             style={{ letterSpacing: '0.02em' }}>
                           {m.league.name}
                         </h3>
                         {m.isCommissioner && (
-                          <span className="text-xs bg-gold-400 text-ink-900 px-1.5 py-0.5 rounded-sm font-display font-700 uppercase tracking-wide">
+                          <span className="text-xs bg-gold-400 text-ink-900 px-1.5 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide">
                             Commish
                           </span>
                         )}
                       </div>
                       <p className="text-cream-400 text-sm">{m.teamName}</p>
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
-                        <span className={`text-xs px-2 py-0.5 rounded-sm font-display font-700 uppercase tracking-wide ${draftStatusStyle(m.league.draftStatus)}`}>
+                        <span className={`text-xs px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide ${draftStatusStyle(m.league.draftStatus)}`}>
                           {m.league.draftStatus}
                         </span>
                         <span className="text-xs text-cream-500">
@@ -127,7 +127,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="font-display font-800 text-3xl text-gold-400 leading-none">
+                      <div className="font-display font-extrabold text-3xl text-gold-400 leading-none">
                         {seasonTotal.toFixed(1)}
                       </div>
                       <div className="overline text-cream-500 mt-1">Season pts</div>
@@ -145,7 +145,7 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div className="space-y-6">
           <div className="card">
-            <h2 className="font-display font-700 uppercase tracking-widest text-sm text-cream-300 mb-4">
+            <h2 className="font-display font-bold uppercase tracking-widest text-sm text-cream-300 mb-4">
               Today's Top Scores
             </h2>
             {topScores.length === 0 ? (
@@ -155,13 +155,13 @@ export default function Dashboard() {
                 {topScores.map((score, i) => (
                   <div key={score.id} className="flex items-center justify-between py-2 border-b border-ink-600 last:border-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-cream-500 w-5 font-display font-700">{i + 1}</span>
+                      <span className="text-xs text-cream-500 w-5 font-display font-bold">{i + 1}</span>
                       <div>
                         <div className="text-sm font-semibold text-cream-100">{score.politician.name}</div>
                         <div className="text-xs text-cream-500">{score.politician.party}</div>
                       </div>
                     </div>
-                    <span className="font-display font-700 text-gold-400">{score.points}</span>
+                    <span className="font-display font-bold text-gold-400">{score.points}</span>
                   </div>
                 ))}
               </div>
@@ -169,7 +169,7 @@ export default function Dashboard() {
           </div>
 
           <div className="card">
-            <h2 className="font-display font-700 uppercase tracking-widest text-sm text-cream-300 mb-4">
+            <h2 className="font-display font-bold uppercase tracking-widest text-sm text-cream-300 mb-4">
               Quick Links
             </h2>
             <div className="space-y-1">
@@ -184,7 +184,7 @@ export default function Dashboard() {
                   className="flex items-center gap-3 py-2.5 text-cream-400 hover:text-gold-400 transition-colors border-b border-ink-700 last:border-0"
                 >
                   <span>{l.icon}</span>
-                  <span className="text-xs font-display font-700 uppercase tracking-widest">{l.label}</span>
+                  <span className="text-xs font-display font-bold uppercase tracking-widest">{l.label}</span>
                 </Link>
               ))}
             </div>
