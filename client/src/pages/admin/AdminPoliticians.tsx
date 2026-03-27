@@ -87,7 +87,7 @@ export default function AdminPoliticians() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <div className="inline-block bg-crimson-600/20 border border-crimson-600/40 text-crimson-400 text-xs font-bold px-3 py-1 rounded-full mb-2">ADMIN</div>
+          <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 text-xs font-bold px-3 py-1 rounded-full mb-2">ADMIN</div>
           <h1 className="font-display text-4xl font-bold text-white">Manage Politicians</h1>
         </div>
         <div className="flex gap-3">
@@ -160,7 +160,7 @@ export default function AdminPoliticians() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th">Name</th>
                 <th className="table-th">Party</th>
@@ -175,17 +175,17 @@ export default function AdminPoliticians() {
                 <tr key={p.id} className={`table-row ${!p.isActive ? 'opacity-50' : ''}`}>
                   <td className="table-td font-semibold text-white">{p.name}</td>
                   <td className="table-td"><PartyBadge party={p.party} /></td>
-                  <td className="table-td text-sm text-gray-300">{p.title}</td>
-                  <td className="table-td text-sm text-gray-300">{p.state}</td>
+                  <td className="table-td text-sm text-cream-300">{p.title}</td>
+                  <td className="table-td text-sm text-cream-300">{p.state}</td>
                   <td className="table-td">
-                    <span className={`text-xs px-2 py-0.5 rounded font-bold ${p.isActive ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-400'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded font-bold ${p.isActive ? 'bg-green-900 text-green-300' : 'bg-ink-700 text-cream-400'}`}>
                       {p.isActive ? 'ACTIVE' : 'INACTIVE'}
                     </span>
                   </td>
                   <td className="table-td">
                     <div className="flex gap-3">
                       <button onClick={() => openEdit(p)} className="text-xs text-gold-400 hover:text-gold-300">Edit</button>
-                      <button onClick={() => toggleActive(p)} className="text-xs text-gray-400 hover:text-white">
+                      <button onClick={() => toggleActive(p)} className="text-xs text-cream-400 hover:text-white">
                         {p.isActive ? 'Deactivate' : 'Activate'}
                       </button>
                     </div>
@@ -194,7 +194,7 @@ export default function AdminPoliticians() {
               ))}
             </tbody>
           </table>
-          <div className="pt-3 text-xs text-gray-600">{filtered.length} politicians</div>
+          <div className="pt-3 text-xs text-cream-500">{filtered.length} politicians</div>
         </div>
       )}
     </div>

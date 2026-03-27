@@ -16,7 +16,7 @@ export default function MemberRoster() {
   }, [id, memberId]);
 
   if (loading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>;
-  if (!data) return <div className="text-gray-400">Roster not found.</div>;
+  if (!data) return <div className="text-cream-400">Roster not found.</div>;
 
   const { member, roster } = data;
   const seasonTotal = roster.reduce((s: number, p: any) => s + (p.seasonTotal ?? 0), 0);
@@ -24,16 +24,16 @@ export default function MemberRoster() {
   return (
     <div>
       <div className="mb-6">
-        <div className="text-sm text-gray-500 mb-1">
-          <Link to={`/leagues/${id}`} className="hover:text-gray-300">League</Link> / Rosters / {member.teamName}
+        <div className="text-sm text-cream-500 mb-1">
+          <Link to={`/leagues/${id}`} className="hover:text-cream-300">League</Link> / Rosters / {member.teamName}
         </div>
         <h1 className="font-display text-4xl font-bold text-white">{member.teamName}</h1>
-        <p className="text-gray-400 mt-1">{member.user.username} · Season Total: <strong className="text-gold-400">{seasonTotal.toFixed(1)} pts</strong></p>
+        <p className="text-cream-400 mt-1">{member.user.username} · Season Total: <strong className="text-gold-400">{seasonTotal.toFixed(1)} pts</strong></p>
       </div>
 
       <div className="card">
         <table className="w-full">
-          <thead className="border-b border-navy-600">
+          <thead className="border-b border-ink-600">
             <tr>
               <th className="table-th">Status</th>
               <th className="table-th">Politician</th>
@@ -48,7 +48,7 @@ export default function MemberRoster() {
               .map((p: any) => (
                 <tr key={p.id} className="table-row">
                   <td className="table-td">
-                    <span className={`text-xs px-2 py-0.5 rounded font-bold ${p.isStarter ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-400'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded font-bold ${p.isStarter ? 'bg-green-900 text-green-300' : 'bg-ink-700 text-cream-400'}`}>
                       {p.isStarter ? 'STARTER' : 'BENCH'}
                     </span>
                   </td>
@@ -58,7 +58,7 @@ export default function MemberRoster() {
                     </Link>
                   </td>
                   <td className="table-td"><PartyBadge party={p.party} /></td>
-                  <td className="table-td text-gray-400 text-xs">{p.title} · {p.state}</td>
+                  <td className="table-td text-cream-400 text-xs">{p.title} · {p.state}</td>
                   <td className="table-td text-right font-bold text-gold-400">{(p.seasonTotal ?? 0).toFixed(1)}</td>
                 </tr>
               ))}

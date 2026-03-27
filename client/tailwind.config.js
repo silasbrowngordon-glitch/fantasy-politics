@@ -4,36 +4,55 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: {
-          900: '#06080f',
-          800: '#0b1120',
-          700: '#0f1c38',
-          600: '#152650',
-          500: '#1c3268',
+        // Page backgrounds
+        ink: {
+          950: '#06060a',
+          900: '#0a0a0f',
+          800: '#111118',
+          700: '#18181f',
+          600: '#22222d',
+          500: '#2e2e3d',
+          400: '#3d3d52',
+          300: '#56566e',
         },
-        // primary accent — patriot red
+        // Primary accent — warm amber gold
         gold: {
-          500: '#cc2936',
-          400: '#e03545',
-          300: '#f87171',
+          600: '#a07835',
+          500: '#c4972f',
+          400: '#d4a843',
+          300: '#e8c46a',
+          200: '#f5dfa0',
+          100: '#fdf4dc',
         },
-        // secondary accent — patriot blue
-        patriot: {
-          700: '#1e3a8a',
-          600: '#1d4ed8',
-          500: '#3b82f6',
-          400: '#60a5fa',
-          300: '#93c5fd',
-        },
+        // Secondary accent — deep crimson
         crimson: {
-          600: '#9b1c1c',
-          500: '#b91c1c',
-          400: '#dc2626',
+          700: '#8b0f22',
+          600: '#a8152b',
+          500: '#c41e3a',
+          400: '#e02040',
+          300: '#f05070',
+        },
+        // Warm off-white text
+        cream: {
+          100: '#f5efe3',
+          200: '#ede8df',
+          300: '#d8d0c4',
+          400: '#b8b0a4',
+          500: '#8a8278',
         },
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        display: ['"Barlow Condensed"', 'Impact', 'sans-serif'],
         body: ['"Inter"', 'system-ui', 'sans-serif'],
+      },
+      backgroundImage: {
+        'grid-ink': `
+          linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)
+        `,
+      },
+      backgroundSize: {
+        'grid-40': '40px 40px',
       },
     },
   },

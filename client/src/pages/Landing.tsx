@@ -1,93 +1,184 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Logo from '../components/Logo';
+
+const STEPS = [
+  {
+    num: '01',
+    title: 'Draft Your Roster',
+    body: 'Join a league and pick real politicians in a live snake draft — senators, representatives, governors, and more.',
+  },
+  {
+    num: '02',
+    title: 'Earn Daily Points',
+    body: 'Points are assigned every day based on each politician\'s news coverage, votes, speeches — and yes, scandals.',
+  },
+  {
+    num: '03',
+    title: 'Win the Season',
+    body: 'Set your starting lineup, work the waiver wire, and climb the standings. The most chaotic roster wins.',
+  },
+];
+
+const STATS = [
+  { value: '500+', label: 'Active Politicians' },
+  { value: 'Daily', label: 'Score Updates' },
+  { value: 'Live', label: 'Draft Rooms' },
+];
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-navy-900">
-      {/* Header */}
-      <nav className="border-b border-navy-600 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-gold-500 text-2xl">★</span>
-          <span className="font-display text-xl font-bold text-white">Fantasy Politics</span>
-        </div>
-        <div className="flex gap-3">
-          <Link to="/login" className="btn-secondary">Sign In</Link>
-          <Link to="/register" className="btn-primary">Get Started</Link>
+    <div className="min-h-screen bg-ink-900" style={{
+      backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)',
+      backgroundSize: '40px 40px',
+    }}>
+
+      {/* Nav */}
+      <nav className="border-b border-ink-600 px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <Logo size={36} />
+            <span className="font-display text-xl font-700 uppercase tracking-widest text-cream-100">
+              Fantasy Politics
+            </span>
+          </Link>
+          <div className="flex gap-3">
+            <Link to="/login" className="btn-secondary text-xs px-4 py-2">Sign In</Link>
+            <Link to="/register" className="btn-primary text-xs px-4 py-2">Get Started</Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-700/30 to-navy-900" />
-        <div className="relative max-w-4xl mx-auto px-6 py-24 text-center">
-          <div className="inline-block bg-gold-500/10 border border-gold-500/30 text-gold-400 text-sm font-bold px-4 py-2 rounded-full mb-8">
-            The #1 Fantasy Game for Political Junkies
-          </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            Draft the <span className="text-gold-400">Politicians.</span><br />
-            Win the <span className="text-crimson-400">Season.</span>
+      <div className="max-w-6xl mx-auto px-6 pt-20 pb-16">
+        <div className="max-w-4xl">
+          <div className="overline mb-6">Season 2025 · Now Open</div>
+
+          <h1 className="font-display font-800 uppercase leading-none text-cream-100 mb-6"
+              style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
+            Draft the<br />
+            <span style={{ color: '#d4a843' }}>Politicians.</span><br />
+            Win the<br />
+            <span style={{ WebkitTextStroke: '2px #d4a843', color: 'transparent' }}>Season.</span>
           </h1>
-          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Fantasy Politics is fantasy sports for Washington insiders and armchair analysts alike.
-            Draft senators, representatives, and more — earn points based on their daily political activity.
+
+          <p className="text-cream-300 text-lg leading-relaxed max-w-xl mt-8 mb-10 font-body">
+            Fantasy sports for political obsessives. Draft real senators and representatives,
+            score points on their daily activity — and cash in when they inevitably implode.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" className="btn-primary text-lg px-8 py-3">
+
+          <div className="flex flex-wrap gap-4 items-center">
+            <Link to="/register" className="btn-primary text-base px-8 py-3">
               Create Your Team
             </Link>
-            <Link to="/login" className="btn-secondary text-lg px-8 py-3">
+            <Link to="/login" className="btn-secondary text-base px-8 py-3">
               Sign In
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Features */}
-      <div className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="font-display text-3xl font-bold text-center text-white mb-12">
-          How It Works
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: '🗳️',
-              title: 'Draft Your Roster',
-              desc: 'Join a league and draft real politicians in a live snake draft. Choose from senators, representatives, governors, and more.',
-            },
-            {
-              icon: '📊',
-              title: 'Earn Daily Points',
-              desc: 'Our game administrator assigns daily point values based on each politician\'s news-making activities. Big day? Big points.',
-            },
-            {
-              icon: '🏆',
-              title: 'Climb the Standings',
-              desc: 'Set your starting lineup each day, work the waiver wire, and climb the league standings to claim the championship.',
-            },
-          ].map((f) => (
-            <div key={f.title} className="card text-center">
-              <div className="text-5xl mb-4">{f.icon}</div>
-              <h3 className="text-xl font-bold text-gold-400 mb-3">{f.title}</h3>
-              <p className="text-gray-400">{f.desc}</p>
+        {/* Stats strip */}
+        <div className="mt-16 pt-8 border-t border-ink-600 flex flex-wrap gap-12">
+          {STATS.map((s) => (
+            <div key={s.label}>
+              <div className="font-display font-800 uppercase text-4xl text-gold-400 leading-none">
+                {s.value}
+              </div>
+              <div className="overline mt-1 text-cream-500">{s.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="bg-navy-800 border-y border-navy-600 py-16 text-center">
-        <h2 className="font-display text-3xl font-bold text-white mb-4">
-          Ready to play the political game?
-        </h2>
-        <p className="text-gray-400 mb-8">Join thousands of players drafting the nation's most influential politicians.</p>
-        <Link to="/register" className="btn-primary text-lg px-10 py-3">
-          Start Playing Free
-        </Link>
+      {/* Gold divider ticker */}
+      <div className="bg-gold-400 py-2 overflow-hidden">
+        <div className="flex gap-12 whitespace-nowrap font-display font-700 uppercase text-ink-900 text-sm tracking-widest px-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <React.Fragment key={i}>
+              <span>Draft · Vote · Score · Win</span>
+              <span style={{ color: '#a07835' }}>★</span>
+            </React.Fragment>
+          ))}
+        </div>
       </div>
 
-      <footer className="text-center py-8 text-gray-600 text-sm">
-        © 2025 Fantasy Politics. For entertainment purposes only.
-      </footer>
+      {/* How it works */}
+      <div className="max-w-6xl mx-auto px-6 py-24">
+        <div className="overline mb-4">How It Works</div>
+        <h2 className="font-display font-800 uppercase text-5xl text-cream-100 mb-16"
+            style={{ letterSpacing: '-0.01em' }}>
+          Three steps to glory
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-0 border border-ink-600 rounded-sm overflow-hidden">
+          {STEPS.map((step, i) => (
+            <div
+              key={step.num}
+              className={`p-8 ${i < STEPS.length - 1 ? 'border-b md:border-b-0 md:border-r border-ink-600' : ''}`}
+            >
+              <div className="font-display font-800 text-6xl leading-none mb-4"
+                   style={{ color: '#2e2e3d' }}>
+                {step.num}
+              </div>
+              <h3 className="font-display font-700 uppercase text-2xl text-cream-100 mb-3"
+                  style={{ letterSpacing: '0.02em' }}>
+                {step.title}
+              </h3>
+              <p className="text-cream-400 text-sm leading-relaxed">{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Chaos bonus callout */}
+      <div className="border-y border-ink-600 bg-ink-800">
+        <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          <div>
+            <div className="overline mb-3" style={{ color: '#c41e3a' }}>New This Season</div>
+            <h2 className="font-display font-800 uppercase text-4xl text-cream-100 leading-tight"
+                style={{ letterSpacing: '-0.01em' }}>
+              Chaos Bonus.<br />
+              <span style={{ color: '#d4a843' }}>Scandal pays.</span>
+            </h2>
+          </div>
+          <div className="flex gap-8 flex-wrap">
+            {[
+              { pts: '+5', label: 'Major Gaffe' },
+              { pts: '+8', label: 'Ethics Probe' },
+              { pts: '+10', label: 'Indictment' },
+            ].map((b) => (
+              <div key={b.label} className="text-center">
+                <div className="font-display font-800 text-4xl text-gold-400 leading-none">{b.pts}</div>
+                <div className="overline mt-1 text-cream-500">{b.label}</div>
+              </div>
+            ))}
+          </div>
+          <Link to="/register" className="btn-primary shrink-0">
+            Start Playing Free
+          </Link>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-ink-600 mt-0">
+        <div className="flex items-center gap-3">
+          <Logo size={28} />
+          <span className="font-display font-700 uppercase tracking-widest text-cream-400 text-sm">
+            Fantasy Politics
+          </span>
+        </div>
+        <p className="text-cream-500 text-xs">
+          © 2025 Fantasy Politics · For entertainment purposes only
+        </p>
+        <div className="flex gap-6">
+          <Link to="/scoring" className="text-cream-500 hover:text-gold-400 text-xs font-display uppercase tracking-widest transition-colors">
+            Scoring Rules
+          </Link>
+          <Link to="/login" className="text-cream-500 hover:text-gold-400 text-xs font-display uppercase tracking-widest transition-colors">
+            Sign In
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

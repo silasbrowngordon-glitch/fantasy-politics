@@ -70,12 +70,12 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   const d = payload[0].payload;
   const pts = payload[0].value;
   return (
-    <div className="bg-navy-800 border border-navy-600 rounded p-3 shadow-xl max-w-xs">
-      <div className="text-sm text-gray-400 mb-1">{fmt(d.date)}</div>
-      <div className={`text-2xl font-bold ${pts > 0 ? 'text-green-400' : pts < 0 ? 'text-red-400' : 'text-gray-400'}`}>
+    <div className="bg-ink-800 border border-ink-600 rounded p-3 shadow-xl max-w-xs">
+      <div className="text-sm text-cream-400 mb-1">{fmt(d.date)}</div>
+      <div className={`text-2xl font-bold ${pts > 0 ? 'text-green-400' : pts < 0 ? 'text-red-400' : 'text-cream-400'}`}>
         {pts > 0 ? '+' : ''}{pts} pts
       </div>
-      {d.note && <div className="text-xs text-gray-400 mt-1 leading-snug">{d.note}</div>}
+      {d.note && <div className="text-xs text-cream-400 mt-1 leading-snug">{d.note}</div>}
     </div>
   );
 }
@@ -92,7 +92,7 @@ export default function PoliticianProfile() {
   }, [id]);
 
   if (loading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>;
-  if (!data) return <div className="text-gray-400">Politician not found.</div>;
+  if (!data) return <div className="text-cream-400">Politician not found.</div>;
 
   const { politician } = data;
 
@@ -112,8 +112,8 @@ export default function PoliticianProfile() {
 
   return (
     <div>
-      <div className="mb-2 text-sm text-gray-500">
-        <Link to="/politicians" className="hover:text-gray-300">Politicians</Link> / {politician.name}
+      <div className="mb-2 text-sm text-cream-500">
+        <Link to="/politicians" className="hover:text-cream-300">Politicians</Link> / {politician.name}
       </div>
 
       {/* Profile header */}
@@ -122,10 +122,10 @@ export default function PoliticianProfile() {
           <img
             src={politician.imageUrl}
             alt={politician.name}
-            className="w-20 h-20 rounded-full object-cover border-2 border-navy-600"
+            className="w-20 h-20 rounded-full object-cover border-2 border-ink-600"
           />
         ) : (
-          <div className="w-20 h-20 rounded-full bg-navy-700 border-2 border-navy-600 flex items-center justify-center text-3xl font-bold text-gold-500">
+          <div className="w-20 h-20 rounded-full bg-ink-700 border-2 border-ink-600 flex items-center justify-center text-3xl font-bold text-gold-500">
             {politician.name.charAt(0)}
           </div>
         )}
@@ -137,8 +137,8 @@ export default function PoliticianProfile() {
               <span className="text-xs bg-red-900 text-red-300 px-2 py-0.5 rounded">INACTIVE</span>
             )}
           </div>
-          <p className="text-gray-400 mt-1">{politician.title} · {politician.state}</p>
-          {politician.bio && <p className="text-gray-300 mt-3 max-w-2xl">{politician.bio}</p>}
+          <p className="text-cream-400 mt-1">{politician.title} · {politician.state}</p>
+          {politician.bio && <p className="text-cream-300 mt-3 max-w-2xl">{politician.bio}</p>}
         </div>
       </div>
 
@@ -146,11 +146,11 @@ export default function PoliticianProfile() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="card text-center py-4">
           <div className="text-3xl font-bold text-gold-400">{allTime.toFixed(1)}</div>
-          <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">All-Time Points</div>
+          <div className="text-xs text-cream-500 mt-1 uppercase tracking-wide">All-Time Points</div>
         </div>
         <div className="card text-center py-4">
-          <div className="text-3xl font-bold text-patriot-400">{avg.toFixed(2)}</div>
-          <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Avg / Day</div>
+          <div className="text-3xl font-bold text-gold-400">{avg.toFixed(2)}</div>
+          <div className="text-xs text-cream-500 mt-1 uppercase tracking-wide">Avg / Day</div>
         </div>
         <div className="card text-center py-4">
           {best ? (
@@ -158,11 +158,11 @@ export default function PoliticianProfile() {
               <div className="text-3xl font-bold text-green-400">
                 {best.points > 0 ? '+' : ''}{best.points}
               </div>
-              <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Best Day</div>
-              <div className="text-xs text-gray-600 mt-0.5">{fmtShort(best.date)}</div>
+              <div className="text-xs text-cream-500 mt-1 uppercase tracking-wide">Best Day</div>
+              <div className="text-xs text-cream-500 mt-0.5">{fmtShort(best.date)}</div>
             </>
           ) : (
-            <div className="text-gray-600 text-sm">No data</div>
+            <div className="text-cream-500 text-sm">No data</div>
           )}
         </div>
         <div className="card text-center py-4">
@@ -171,11 +171,11 @@ export default function PoliticianProfile() {
               <div className="text-3xl font-bold text-red-400">
                 {worst.points > 0 ? '+' : ''}{worst.points}
               </div>
-              <div className="text-xs text-gray-500 mt-1 uppercase tracking-wide">Worst Day</div>
-              <div className="text-xs text-gray-600 mt-0.5">{fmtShort(worst.date)}</div>
+              <div className="text-xs text-cream-500 mt-1 uppercase tracking-wide">Worst Day</div>
+              <div className="text-xs text-cream-500 mt-0.5">{fmtShort(worst.date)}</div>
             </>
           ) : (
-            <div className="text-gray-600 text-sm">No data</div>
+            <div className="text-cream-500 text-sm">No data</div>
           )}
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function PoliticianProfile() {
       {scores.length > 0 && (
         <div className="card mb-6">
           <h2 className="text-xl font-bold text-white mb-1">Daily Points</h2>
-          <p className="text-xs text-gray-500 mb-5">{scores.length} scoring day{scores.length !== 1 ? 's' : ''} on record</p>
+          <p className="text-xs text-cream-500 mb-5">{scores.length} scoring day{scores.length !== 1 ? 's' : ''} on record</p>
           <ResponsiveContainer width="100%" height={240}>
             <AreaChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
               <defs>
@@ -232,11 +232,11 @@ export default function PoliticianProfile() {
         <div className="lg:col-span-2 card">
           <h2 className="text-xl font-bold text-white mb-4">Score History</h2>
           {scores.length === 0 ? (
-            <p className="text-gray-500">No scores recorded yet.</p>
+            <p className="text-cream-500">No scores recorded yet.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="border-b border-navy-600">
+                <thead className="border-b border-ink-600">
                   <tr>
                     <th className="table-th">Date</th>
                     <th className="table-th text-right">Points</th>
@@ -247,16 +247,16 @@ export default function PoliticianProfile() {
                   {/* Most recent first in the table */}
                   {[...scores].reverse().map((s) => (
                     <tr key={s.id} className="table-row">
-                      <td className="table-td text-sm text-gray-300 whitespace-nowrap">
+                      <td className="table-td text-sm text-cream-300 whitespace-nowrap">
                         {fmt(s.date)}
                       </td>
                       <td className="table-td text-right">
-                        <span className={`font-bold text-lg ${s.points > 0 ? 'text-green-400' : s.points < 0 ? 'text-red-400' : 'text-gray-500'}`}>
+                        <span className={`font-bold text-lg ${s.points > 0 ? 'text-green-400' : s.points < 0 ? 'text-red-400' : 'text-cream-500'}`}>
                           {s.points > 0 ? '+' : ''}{s.points}
                         </span>
                       </td>
-                      <td className="table-td text-sm text-gray-400">
-                        {s.note || <span className="text-gray-600">—</span>}
+                      <td className="table-td text-sm text-cream-400">
+                        {s.note || <span className="text-cream-500">—</span>}
                       </td>
                     </tr>
                   ))}
@@ -270,17 +270,17 @@ export default function PoliticianProfile() {
         <div className="card">
           <h2 className="text-xl font-bold text-white mb-4">On Rosters</h2>
           {politician.draftPicks.length === 0 ? (
-            <p className="text-gray-500 text-sm">Not drafted in any league.</p>
+            <p className="text-cream-500 text-sm">Not drafted in any league.</p>
           ) : (
             <div className="space-y-3">
               {politician.draftPicks.map((dp) => (
                 <Link
                   key={dp.id}
                   to={`/leagues/${dp.leagueMember.league.id}`}
-                  className="block p-3 bg-navy-700 rounded hover:bg-navy-600 transition-colors"
+                  className="block p-3 bg-ink-700 rounded hover:bg-ink-600 transition-colors"
                 >
                   <div className="font-semibold text-white text-sm">{dp.leagueMember.league.name}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">
+                  <div className="text-xs text-cream-400 mt-0.5">
                     {dp.leagueMember.user.username}'s team
                   </div>
                 </Link>

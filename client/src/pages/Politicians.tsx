@@ -93,7 +93,7 @@ export default function Politicians() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th" onClick={() => handleSort('name')}>
                   Name <SortIcon k="name" />
@@ -121,8 +121,8 @@ export default function Politicians() {
                     </Link>
                   </td>
                   <td className="table-td"><PartyBadge party={p.party} /></td>
-                  <td className="table-td text-gray-300 text-sm">{p.title}</td>
-                  <td className="table-td text-gray-300 text-sm">{p.state}</td>
+                  <td className="table-td text-cream-300 text-sm">{p.title}</td>
+                  <td className="table-td text-cream-300 text-sm">{p.state}</td>
                   <td className="table-td text-right font-bold text-gold-400">
                     {(p.seasonTotal ?? 0).toFixed(1)}
                   </td>
@@ -130,14 +130,14 @@ export default function Politicians() {
               ))}
               {sorted.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="table-td text-center text-gray-500 py-8">
+                  <td colSpan={5} className="table-td text-center text-cream-500 py-8">
                     No politicians found matching your filters.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-          <div className="pt-3 text-xs text-gray-600">{sorted.length} politicians</div>
+          <div className="pt-3 text-xs text-cream-500">{sorted.length} politicians</div>
         </div>
       )}
     </div>

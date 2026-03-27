@@ -48,30 +48,43 @@ export default function Dashboard() {
 
   const today = new Date().toISOString().split('T')[0];
 
+  const draftStatusStyle = (s: string) => {
+    if (s === 'COMPLETE') return 'bg-green-950 text-green-400 border border-green-900';
+    if (s === 'DRAFTING') return 'bg-yellow-950 text-yellow-400 border border-yellow-900';
+    return 'bg-ink-600 text-cream-500 border border-ink-500';
+  };
+
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="font-display text-4xl font-bold text-white">
-          Welcome back, <span className="text-gold-400">{user?.username}</span>
+      <div className="mb-10">
+        <div className="overline mb-2">Your Dashboard</div>
+        <h1 className="font-display font-800 uppercase text-5xl text-cream-100 leading-none"
+            style={{ letterSpacing: '-0.01em' }}>
+          Welcome back,{' '}
+          <span style={{ color: '#d4a843' }}>{user?.username}</span>
         </h1>
-        <p className="text-gray-400 mt-1">Here's your political lineup at a glance.</p>
+        <p className="text-cream-400 mt-2 text-sm">Here's your political lineup at a glance.</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Leagues */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Your Leagues</h2>
-            <Link to="/leagues" className="text-gold-400 hover:text-gold-300 text-sm font-semibold">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-display font-700 uppercase text-lg text-cream-200 tracking-widest">
+              Your Leagues
+            </h2>
+            <Link to="/leagues" className="text-gold-400 text-xs font-display font-700 uppercase tracking-widest hover:text-gold-300 transition-colors">
               View All →
             </Link>
           </div>
 
           {memberships.length === 0 ? (
-            <div className="card text-center py-12">
+            <div className="card text-center py-16">
               <div className="text-5xl mb-4">🗳️</div>
-              <h3 className="text-xl font-bold text-white mb-2">No leagues yet</h3>
-              <p className="text-gray-400 mb-6">Create or join a league to start playing.</p>
+              <h3 className="font-display font-700 uppercase text-2xl text-cream-100 mb-2">
+                No Leagues Yet
+              </h3>
+              <p className="text-cream-400 mb-6 text-sm">Create or join a league to start playing.</p>
               <Link to="/leagues" className="btn-primary">Get Started</Link>
             </div>
           ) : (
@@ -85,38 +98,42 @@ export default function Dashboard() {
                 <Link
                   key={m.id}
                   to={`/leagues/${m.league.id}`}
-                  className="card block hover:border-gold-500 transition-colors group"
+                  className="card block group transition-colors duration-150"
+                  style={{ borderLeft: '3px solid transparent' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = '#d4a843')}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderLeftColor = 'transparent')}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-bold text-white group-hover:text-gold-400 transition-colors">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h3 className="font-display font-700 uppercase text-xl text-cream-100 group-hover:text-gold-400 transition-colors"
+                            style={{ letterSpacing: '0.02em' }}>
                           {m.league.name}
                         </h3>
                         {m.isCommissioner && (
-                          <span className="text-xs bg-gold-500 text-navy-900 px-1.5 py-0.5 rounded font-bold">
-                            COMMISSIONER
+                          <span className="text-xs bg-gold-400 text-ink-900 px-1.5 py-0.5 rounded-sm font-display font-700 uppercase tracking-wide">
+                            Commish
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-400">{m.teamName}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-xs px-2 py-0.5 rounded font-bold ${
-                          m.league.draftStatus === 'COMPLETE' ? 'bg-green-900 text-green-300' :
-                          m.league.draftStatus === 'DRAFTING' ? 'bg-yellow-900 text-yellow-300' :
-                          'bg-gray-700 text-gray-400'
-                        }`}>
+                      <p className="text-cream-400 text-sm">{m.teamName}</p>
+                      <div className="flex items-center gap-2 mt-2 flex-wrap">
+                        <span className={`text-xs px-2 py-0.5 rounded-sm font-display font-700 uppercase tracking-wide ${draftStatusStyle(m.league.draftStatus)}`}>
                           {m.league.draftStatus}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-cream-500">
                           {m.league.members.length} members
                         </span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-gold-400">{seasonTotal.toFixed(1)}</div>
-                      <div className="text-xs text-gray-500">season pts</div>
-                      <div className="text-sm text-gray-300 mt-1">+{todayTotal.toFixed(1)} today</div>
+                    <div className="text-right shrink-0">
+                      <div className="font-display font-800 text-3xl text-gold-400 leading-none">
+                        {seasonTotal.toFixed(1)}
+                      </div>
+                      <div className="overline text-cream-500 mt-1">Season pts</div>
+                      <div className="text-sm text-cream-300 mt-1 font-display">
+                        +{todayTotal.toFixed(1)} today
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -127,39 +144,49 @@ export default function Dashboard() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Today's top scores */}
           <div className="card">
-            <h2 className="text-lg font-bold text-white mb-4">Today's Top Scores</h2>
+            <h2 className="font-display font-700 uppercase tracking-widest text-sm text-cream-300 mb-4">
+              Today's Top Scores
+            </h2>
             {topScores.length === 0 ? (
-              <p className="text-gray-500 text-sm">No scores entered yet today.</p>
+              <p className="text-cream-500 text-sm">No scores entered yet today.</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {topScores.map((score, i) => (
-                  <div key={score.id} className="flex items-center justify-between py-1.5 border-b border-navy-700 last:border-0">
+                  <div key={score.id} className="flex items-center justify-between py-2 border-b border-ink-600 last:border-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500 w-5">{i + 1}.</span>
+                      <span className="text-xs text-cream-500 w-5 font-display font-700">{i + 1}</span>
                       <div>
-                        <div className="text-sm font-semibold text-white">{score.politician.name}</div>
-                        <div className="text-xs text-gray-500">{score.politician.party}</div>
+                        <div className="text-sm font-semibold text-cream-100">{score.politician.name}</div>
+                        <div className="text-xs text-cream-500">{score.politician.party}</div>
                       </div>
                     </div>
-                    <span className="text-gold-400 font-bold">{score.points}</span>
+                    <span className="font-display font-700 text-gold-400">{score.points}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Quick links */}
           <div className="card">
-            <h2 className="text-lg font-bold text-white mb-4">Quick Links</h2>
-            <div className="space-y-2">
-              <Link to="/leagues" className="flex items-center gap-3 py-2 text-gray-300 hover:text-white transition-colors">
-                <span>🏟️</span> <span className="text-sm">My Leagues</span>
-              </Link>
-              <Link to="/politicians" className="flex items-center gap-3 py-2 text-gray-300 hover:text-white transition-colors">
-                <span>👤</span> <span className="text-sm">Politician Directory</span>
-              </Link>
+            <h2 className="font-display font-700 uppercase tracking-widest text-sm text-cream-300 mb-4">
+              Quick Links
+            </h2>
+            <div className="space-y-1">
+              {[
+                { to: '/leagues', icon: '🏟', label: 'My Leagues' },
+                { to: '/politicians', icon: '👤', label: 'Politician Directory' },
+                { to: '/scoring', icon: '📋', label: 'Scoring Rules' },
+              ].map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="flex items-center gap-3 py-2.5 text-cream-400 hover:text-gold-400 transition-colors border-b border-ink-700 last:border-0"
+                >
+                  <span>{l.icon}</span>
+                  <span className="text-xs font-display font-700 uppercase tracking-widest">{l.label}</span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

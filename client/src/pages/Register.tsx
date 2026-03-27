@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import toast from 'react-hot-toast';
+import Logo from '../components/Logo';
 
 export default function Register() {
   const { register } = useAuth();
@@ -30,18 +31,54 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-900 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <span className="text-gold-500 text-3xl">★</span>
-            <span className="font-display text-2xl font-bold text-white">Fantasy Politics</span>
-          </Link>
-          <h1 className="font-display text-3xl font-bold text-white">Join the game</h1>
-          <p className="text-gray-400 mt-2">Create your account to start drafting</p>
+    <div className="min-h-screen bg-ink-900 flex" style={{
+      backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)',
+      backgroundSize: '40px 40px',
+    }}>
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-ink-600 bg-ink-800">
+        <Link to="/" className="flex items-center gap-3">
+          <Logo size={32} />
+          <span className="font-display font-700 uppercase tracking-widest text-cream-200 text-sm">
+            Fantasy Politics
+          </span>
+        </Link>
+        <div>
+          <div className="overline mb-4">Join Season 2025</div>
+          <h2 className="font-display font-800 uppercase text-cream-100 leading-none mb-6"
+              style={{ fontSize: '3.5rem', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
+            Your roster<br />
+            <span style={{ color: '#d4a843' }}>awaits.</span>
+          </h2>
+          <p className="text-cream-400 text-sm leading-relaxed max-w-xs">
+            Draft senators, representatives, and governors. Score points on their votes,
+            speeches — and spectacular meltdowns.
+          </p>
         </div>
+        <p className="text-cream-500 text-xs">For entertainment purposes only.</p>
+      </div>
 
-        <div className="card">
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm">
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center mb-8">
+            <Link to="/" className="inline-flex items-center gap-2">
+              <Logo size={28} />
+              <span className="font-display font-700 uppercase tracking-widest text-cream-200 text-sm">
+                Fantasy Politics
+              </span>
+            </Link>
+          </div>
+
+          <div className="mb-8">
+            <div className="overline mb-2">Get Started</div>
+            <h1 className="font-display font-800 uppercase text-4xl text-cream-100"
+                style={{ letterSpacing: '-0.01em' }}>
+              Create Account
+            </h1>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="label">Email</label>
@@ -79,17 +116,19 @@ export default function Register() {
                 minLength={8}
               />
             </div>
-            <button type="submit" className="btn-primary w-full py-3" disabled={loading}>
+            <button type="submit" className="btn-primary w-full py-3 text-base" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-400 mt-6">
-            Already have an account?{' '}
-            {/* <Link to="/login" className="text-gold-400 hover:text-gold-300 font-semibold">
-              Sign in
-            </Link> */}
-          </p>
+          <div className="mt-8 pt-6 border-t border-ink-600 text-center">
+            <p className="text-cream-400 text-sm">
+              Already have an account?{' '}
+              <Link to="/login" className="text-gold-400 font-display font-700 uppercase tracking-wide text-xs">
+                Sign in
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

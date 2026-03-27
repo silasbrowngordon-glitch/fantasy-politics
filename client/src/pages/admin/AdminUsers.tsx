@@ -48,7 +48,7 @@ export default function AdminUsers() {
   return (
     <div>
       <div className="mb-6">
-        <div className="inline-block bg-crimson-600/20 border border-crimson-600/40 text-crimson-400 text-xs font-bold px-3 py-1 rounded-full mb-2">ADMIN</div>
+        <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 text-xs font-bold px-3 py-1 rounded-full mb-2">ADMIN</div>
         <h1 className="font-display text-4xl font-bold text-white">Manage Users</h1>
       </div>
 
@@ -66,7 +66,7 @@ export default function AdminUsers() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th">Username</th>
                 <th className="table-th">Email</th>
@@ -83,22 +83,22 @@ export default function AdminUsers() {
                     {u.username}
                     {u.id === me?.id && <span className="ml-2 text-xs text-gold-500">(You)</span>}
                   </td>
-                  <td className="table-td text-gray-400 text-sm">{u.email}</td>
+                  <td className="table-td text-cream-400 text-sm">{u.email}</td>
                   <td className="table-td">
                     <span className={`text-xs px-2 py-0.5 rounded font-bold ${
-                      u.role === 'ADMIN' ? 'bg-crimson-600/30 text-crimson-400' : 'bg-gray-700 text-gray-400'
+                      u.role === 'ADMIN' ? 'bg-crimson-500/30 text-crimson-500' : 'bg-ink-700 text-cream-400'
                     }`}>
                       {u.role}
                     </span>
                   </td>
                   <td className="table-td">
                     <span className={`text-xs px-2 py-0.5 rounded font-bold ${
-                      u.isActive ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-400'
+                      u.isActive ? 'bg-green-900 text-green-300' : 'bg-ink-700 text-cream-400'
                     }`}>
                       {u.isActive ? 'ACTIVE' : 'INACTIVE'}
                     </span>
                   </td>
-                  <td className="table-td text-gray-500 text-sm">
+                  <td className="table-td text-cream-500 text-sm">
                     {new Date(u.createdAt).toLocaleDateString()}
                   </td>
                   <td className="table-td">
@@ -123,7 +123,7 @@ export default function AdminUsers() {
               ))}
             </tbody>
           </table>
-          <div className="pt-3 text-xs text-gray-600">{filtered.length} users</div>
+          <div className="pt-3 text-xs text-cream-500">{filtered.length} users</div>
         </div>
       )}
     </div>

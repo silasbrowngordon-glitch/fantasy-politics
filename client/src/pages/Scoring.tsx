@@ -21,11 +21,11 @@ function Table({ rows, accent }: { rows: { pts: string; label: string }[]; accen
     <table className="w-full">
       <tbody>
         {rows.map((r) => (
-          <tr key={r.label} className="border-b border-navy-700 last:border-0">
+          <tr key={r.label} className="border-b border-ink-700 last:border-0">
             <td className={`py-3 pr-4 font-bold text-lg font-mono whitespace-nowrap ${accent}`}>
               {r.pts}
             </td>
-            <td className="py-3 text-gray-300 text-sm">{r.label}</td>
+            <td className="py-3 text-cream-300 text-sm">{r.label}</td>
           </tr>
         ))}
       </tbody>
@@ -38,7 +38,7 @@ export default function Scoring() {
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="font-display text-4xl font-bold text-white">Scoring Rules</h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-cream-400 mt-2">
           Points are assigned daily by the game administrator based on each politician's news coverage.
           Scores are final once published.
         </p>
@@ -46,23 +46,23 @@ export default function Scoring() {
 
       <div className="card mb-6">
         <h2 className="text-xl font-bold text-white mb-1">Standard Points</h2>
-        <p className="text-sm text-gray-500 mb-4">Earned through legislative activity and media presence.</p>
+        <p className="text-sm text-cream-500 mb-4">Earned through legislative activity and media presence.</p>
         <Table rows={POSITIVE} accent="text-green-400" />
       </div>
 
       <div className="card mb-6" style={{ borderColor: 'rgba(204,41,54,0.4)' }}>
         <h2 className="text-xl font-bold text-white mb-1">
-          Chaos Bonus <span className="ml-2 text-xs bg-gold-500 text-navy-900 px-2 py-0.5 rounded font-bold">NEW</span>
+          Chaos Bonus <span className="ml-2 text-xs bg-gold-400 text-ink-900 px-2 py-0.5 rounded font-bold">NEW</span>
         </h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-cream-500 mb-4">
           Controversy pays. Drama, gaffes, and scandals all score — chaos is rewarded.
         </p>
         <Table rows={CHAOS} accent="text-gold-400" />
       </div>
 
-      <div className="card bg-navy-800/50">
+      <div className="card bg-ink-800/50">
         <h2 className="text-lg font-bold text-white mb-3">Notes</h2>
-        <ul className="text-sm text-gray-400 space-y-2 list-disc list-inside">
+        <ul className="text-sm text-cream-400 space-y-2 list-disc list-inside">
           <li>A politician must appear in the news to receive any points that day.</li>
           <li>Points can stack — a politician can earn both a gaffe bonus and a vote bonus on the same day.</li>
           <li>Breaking with your party only scores if the vote or action is newsworthy.</li>

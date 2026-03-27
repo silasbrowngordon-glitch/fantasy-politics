@@ -4,75 +4,138 @@
 
 @layer base {
   body {
-    @apply bg-navy-900 text-white font-body;
+    @apply bg-ink-900 text-cream-200 font-body;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 
-  h1, h2, h3 {
-    @apply font-display;
+  h1, h2, h3, h4 {
+    @apply font-display tracking-wide;
   }
 }
 
 @layer components {
+
+  /* ── Buttons ─────────────────────────────────────────── */
   .btn-primary {
-    @apply bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-4 py-2 rounded transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center
+           bg-gold-400 text-ink-900
+           font-display font-700 uppercase tracking-widest text-sm
+           px-5 py-2.5 rounded-sm
+           transition-all duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+    letter-spacing: 0.1em;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: #e8c46a;
   }
 
   .btn-secondary {
-    @apply bg-navy-700 text-white font-semibold px-4 py-2 rounded border border-navy-600 transition-colors duration-150;
+    @apply inline-flex items-center justify-center
+           bg-transparent text-cream-200
+           font-display font-700 uppercase tracking-widest text-sm
+           px-5 py-2.5 rounded-sm
+           border border-ink-400
+           transition-all duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+    letter-spacing: 0.1em;
   }
-  .btn-secondary:hover {
-    @apply bg-navy-600;
-    border-color: #3b82f6;
+  .btn-secondary:hover:not(:disabled) {
+    @apply border-gold-400 text-gold-300;
   }
 
   .btn-danger {
-    @apply bg-crimson-500 hover:bg-crimson-400 text-white font-bold px-4 py-2 rounded transition-colors duration-150;
+    @apply inline-flex items-center justify-center
+           bg-crimson-500 text-white
+           font-display font-700 uppercase tracking-widest text-sm
+           px-5 py-2.5 rounded-sm
+           transition-all duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+    letter-spacing: 0.1em;
+  }
+  .btn-danger:hover:not(:disabled) {
+    @apply bg-crimson-400;
   }
 
+  /* ── Cards ───────────────────────────────────────────── */
   .card {
-    @apply bg-navy-800 border border-navy-600 rounded-lg p-6;
+    @apply bg-ink-800 border border-ink-600 rounded-sm p-6;
   }
 
+  .card-accent {
+    @apply bg-ink-800 border border-ink-600 rounded-sm p-6;
+    border-left: 3px solid #d4a843;
+  }
+
+  /* ── Inputs ──────────────────────────────────────────── */
   .input {
-    @apply bg-navy-700 border border-navy-600 text-white placeholder-gray-500 rounded px-3 py-2 w-full outline-none;
+    @apply bg-ink-700 border border-ink-500 text-cream-200
+           placeholder-cream-500 rounded-sm px-3 py-2 w-full outline-none
+           transition-colors duration-150 font-body text-sm;
   }
   .input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px #3b82f6;
+    border-color: #d4a843;
+    box-shadow: 0 0 0 1px #d4a84360;
   }
 
   .label {
-    @apply block text-sm font-semibold text-gray-300 mb-1;
+    @apply block text-xs font-display font-700 uppercase tracking-widest text-cream-400 mb-1.5;
   }
 
+  /* ── Section overline ────────────────────────────────── */
+  .overline {
+    @apply text-xs font-display font-700 uppercase tracking-widest text-gold-400;
+    letter-spacing: 0.15em;
+  }
+
+  /* ── Party badges ────────────────────────────────────── */
   .badge-dem {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-900 text-blue-300 border border-blue-700;
+    @apply inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-display font-700 uppercase tracking-wide
+           bg-blue-950 text-blue-300 border border-blue-800;
   }
-
   .badge-rep {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-red-900 text-red-300 border border-red-700;
+    @apply inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-display font-700 uppercase tracking-wide
+           bg-crimson-700/40 text-crimson-300 border border-crimson-700;
   }
-
   .badge-ind {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-purple-900 text-purple-300 border border-purple-700;
+    @apply inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-display font-700 uppercase tracking-wide
+           bg-purple-950 text-purple-300 border border-purple-800;
   }
-
   .badge-other {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-gray-700 text-gray-300 border border-gray-600;
+    @apply inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-display font-700 uppercase tracking-wide
+           bg-ink-600 text-cream-400 border border-ink-500;
   }
 
+  /* ── Tables ──────────────────────────────────────────── */
   .table-th {
-    @apply px-4 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider cursor-pointer select-none;
+    @apply px-4 py-3 text-left text-xs font-display font-700 uppercase tracking-widest
+           text-cream-400 cursor-pointer select-none;
+    letter-spacing: 0.1em;
   }
   .table-th:hover {
-    color: #60a5fa;
+    color: #d4a843;
   }
 
   .table-td {
-    @apply px-4 py-3 text-sm;
+    @apply px-4 py-3 text-sm text-cream-200;
   }
 
   .table-row {
-    @apply border-b border-navy-700 hover:bg-navy-700 transition-colors;
+    @apply border-b border-ink-600 transition-colors duration-100;
+  }
+  .table-row:hover {
+    background-color: #18181f;
+  }
+
+  /* ── Section divider ─────────────────────────────────── */
+  .section-rule {
+    @apply border-t border-ink-500 mt-8 pt-8;
+  }
+
+  /* ── Stat number ─────────────────────────────────────── */
+  .stat-number {
+    @apply font-display text-5xl font-800 text-gold-400 leading-none;
   }
 }

@@ -94,11 +94,11 @@ export default function MyRoster() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <div className="text-sm text-gray-500 mb-1">
-            <Link to={`/leagues/${id}`} className="hover:text-gray-300">League</Link> / My Roster
+          <div className="text-sm text-cream-500 mb-1">
+            <Link to={`/leagues/${id}`} className="hover:text-cream-300">League</Link> / My Roster
           </div>
           <h1 className="font-display text-4xl font-bold text-white">My Roster</h1>
-          <p className="text-gray-400 mt-1">{data.member.teamName}</p>
+          <p className="text-cream-400 mt-1">{data.member.teamName}</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -117,9 +117,9 @@ export default function MyRoster() {
         </div>
       </div>
 
-      <div className="mb-3 flex items-center gap-2 text-sm text-gray-400">
+      <div className="mb-3 flex items-center gap-2 text-sm text-cream-400">
         <span>Starters selected: <strong className="text-white">{starterIds.size}/8</strong></span>
-        <span className="text-gray-600">·</span>
+        <span className="text-cream-500">·</span>
         <span>Click a player to toggle starter status</span>
       </div>
 
@@ -127,7 +127,7 @@ export default function MyRoster() {
       <div className="card mb-6">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th">Status</th>
                 <th className="table-th">Politician</th>
@@ -140,7 +140,7 @@ export default function MyRoster() {
             <tbody>
               {roster.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="table-td text-center text-gray-500 py-8">
+                  <td colSpan={6} className="table-td text-center text-cream-500 py-8">
                     No politicians drafted yet.
                   </td>
                 </tr>
@@ -152,11 +152,11 @@ export default function MyRoster() {
                     return (
                       <tr
                         key={p.id}
-                        className={`table-row cursor-pointer ${isStarter ? 'bg-navy-700/30' : ''}`}
+                        className={`table-row cursor-pointer ${isStarter ? 'bg-ink-700/30' : ''}`}
                         onClick={() => toggleStarter(p.id)}
                       >
                         <td className="table-td">
-                          <span className={`text-xs px-2 py-0.5 rounded font-bold ${isStarter ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-400'}`}>
+                          <span className={`text-xs px-2 py-0.5 rounded font-bold ${isStarter ? 'bg-green-900 text-green-300' : 'bg-ink-700 text-cream-400'}`}>
                             {isStarter ? 'STARTER' : 'BENCH'}
                           </span>
                         </td>
@@ -168,10 +168,10 @@ export default function MyRoster() {
                           >
                             {p.name}
                           </Link>
-                          <div className="text-xs text-gray-500">{p.title}</div>
+                          <div className="text-xs text-cream-500">{p.title}</div>
                         </td>
                         <td className="table-td"><PartyBadge party={p.party} /></td>
-                        <td className="table-td text-gray-300">{p.state}</td>
+                        <td className="table-td text-cream-300">{p.state}</td>
                         <td className="table-td text-right font-bold text-gold-400">
                           {(p.seasonTotal ?? 0).toFixed(1)}
                         </td>

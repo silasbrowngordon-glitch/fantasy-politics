@@ -89,12 +89,12 @@ export default function AdminScores() {
     <div>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <div className="inline-block bg-crimson-600/20 border border-crimson-600/40 text-crimson-400 text-xs font-bold px-3 py-1 rounded-full mb-2">
+          <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 text-xs font-bold px-3 py-1 rounded-full mb-2">
             ADMIN
           </div>
           <h1 className="font-display text-4xl font-bold text-white">Daily Score Entry</h1>
           {updatedAt && (
-            <p className="text-sm text-gray-500 mt-1">Scores last updated: {updatedAt}</p>
+            <p className="text-sm text-cream-500 mt-1">Scores last updated: {updatedAt}</p>
           )}
         </div>
         <button
@@ -126,13 +126,13 @@ export default function AdminScores() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-cream-400">
             <strong className="text-white">{entered}</strong> of {rows.length} scored
           </div>
         </div>
       </div>
 
-      <div className="text-xs text-gray-500 mb-2">
+      <div className="text-xs text-cream-500 mb-2">
         Tip: Use Enter / ↑↓ arrows to navigate between point fields quickly.
       </div>
 
@@ -141,7 +141,7 @@ export default function AdminScores() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th">Politician</th>
                 <th className="table-th">Party</th>
@@ -152,13 +152,13 @@ export default function AdminScores() {
             </thead>
             <tbody>
               {filtered.map((row, idx) => (
-                <tr key={row.id} className={`table-row ${row.score ? 'bg-navy-700/20' : ''}`}>
+                <tr key={row.id} className={`table-row ${row.score ? 'bg-ink-700/20' : ''}`}>
                   <td className="table-td">
                     <div className="font-semibold text-white">{row.name}</div>
-                    <div className="text-xs text-gray-500">{row.title}</div>
+                    <div className="text-xs text-cream-500">{row.title}</div>
                   </td>
                   <td className="table-td"><PartyBadge party={row.party} /></td>
-                  <td className="table-td text-gray-300 text-sm">{row.state}</td>
+                  <td className="table-td text-cream-300 text-sm">{row.state}</td>
                   <td className="table-td">
                     <input
                       ref={(el) => { inputRefs.current[row.id] = el; }}

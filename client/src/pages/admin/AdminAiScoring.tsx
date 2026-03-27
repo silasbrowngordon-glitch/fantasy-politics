@@ -225,11 +225,11 @@ Only include politicians who appear in the news with non-zero scores, plus any w
     <div>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <div className="inline-block bg-crimson-600/20 border border-crimson-600/40 text-crimson-400 text-xs font-bold px-3 py-1 rounded-full mb-2">
+          <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 text-xs font-bold px-3 py-1 rounded-full mb-2">
             ADMIN · AI
           </div>
           <h1 className="font-display text-4xl font-bold text-white">AI Score Generator</h1>
-          <p className="text-gray-400 mt-1 text-sm">
+          <p className="text-cream-400 mt-1 text-sm">
             Paste today's news headlines and let Claude assign scores automatically.
           </p>
         </div>
@@ -256,7 +256,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-cream-500">
             {loadingPols ? 'Loading politicians...' : `${politicians.length} politicians loaded`}
           </div>
         </div>
@@ -304,7 +304,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
             )}
           </button>
           {streaming && streamProgress && (
-            <div className="text-xs text-gray-500 font-mono truncate max-w-lg">
+            <div className="text-xs text-cream-500 font-mono truncate max-w-lg">
               {streamProgress}
             </div>
           )}
@@ -317,12 +317,12 @@ Only include politicians who appear in the news with non-zero scores, plus any w
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-white text-lg">
               Generated Scores
-              <span className="ml-2 text-sm text-gray-400 font-normal">— edit before submitting</span>
+              <span className="ml-2 text-sm text-cream-400 font-normal">— edit before submitting</span>
             </h2>
-            <span className="text-sm text-gray-400">{results.length} politicians scored</span>
+            <span className="text-sm text-cream-400">{results.length} politicians scored</span>
           </div>
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th">Politician</th>
                 <th className="table-th">Party</th>
@@ -340,20 +340,20 @@ Only include politicians who appear in the news with non-zero scores, plus any w
                     ? 'text-green-400'
                     : pointsNum < 0
                     ? 'text-red-400'
-                    : 'text-gray-400';
+                    : 'text-cream-400';
                 return (
                   <tr key={idx} className="table-row">
                     <td className="table-td">
                       <div className="font-semibold text-white">{row.name}</div>
                       {pol && (
-                        <div className="text-xs text-gray-500">{pol.title} · {pol.state}</div>
+                        <div className="text-xs text-cream-500">{pol.title} · {pol.state}</div>
                       )}
                       {!pol && (
                         <div className="text-xs text-red-400">⚠ ID not matched in DB</div>
                       )}
                     </td>
                     <td className="table-td">
-                      {pol ? <PartyBadge party={pol.party} /> : <span className="text-gray-500">—</span>}
+                      {pol ? <PartyBadge party={pol.party} /> : <span className="text-cream-500">—</span>}
                     </td>
                     <td className="table-td">
                       <input
@@ -375,7 +375,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
                     <td className="table-td text-center">
                       <button
                         onClick={() => removeRow(idx)}
-                        className="text-gray-600 hover:text-red-400 transition-colors text-lg leading-none"
+                        className="text-cream-500 hover:text-red-400 transition-colors text-lg leading-none"
                         title="Remove row"
                       >
                         ×
@@ -387,7 +387,7 @@ Only include politicians who appear in the news with non-zero scores, plus any w
             </tbody>
           </table>
 
-          <div className="mt-4 pt-4 border-t border-navy-600 flex justify-end">
+          <div className="mt-4 pt-4 border-t border-ink-600 flex justify-end">
             <button
               onClick={handleSubmit}
               disabled={saving}

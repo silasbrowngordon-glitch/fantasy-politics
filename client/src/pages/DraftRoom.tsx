@@ -91,7 +91,7 @@ export default function DraftRoom() {
   }
 
   if (loading) return <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>;
-  if (!draftData) return <div className="text-gray-400">League not found.</div>;
+  if (!draftData) return <div className="text-cream-400">League not found.</div>;
 
   const { league, pickedIds, currentPickNumber, totalPicks, currentPickMemberId } = draftData;
   const myMember = league.members.find((m: any) => m.userId === user?.id);
@@ -109,7 +109,7 @@ export default function DraftRoom() {
   return (
     <div>
       <div className="mb-6">
-        <div className="text-sm text-gray-500 mb-1">League: {league.name}</div>
+        <div className="text-sm text-cream-500 mb-1">League: {league.name}</div>
         <h1 className="font-display text-4xl font-bold text-white">Draft Room</h1>
       </div>
 
@@ -117,7 +117,7 @@ export default function DraftRoom() {
         <div className="card text-center py-12 mb-6">
           <div className="text-5xl mb-4">🎯</div>
           <h2 className="text-2xl font-bold text-white mb-2">Draft hasn't started yet</h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-cream-400 mb-6">
             {league.members.length} member{league.members.length !== 1 ? 's' : ''} in the league.
             {myMember?.isCommissioner
               ? ' You are the commissioner — start the draft when everyone is ready.'
@@ -137,11 +137,11 @@ export default function DraftRoom() {
           <div className="card mb-6">
             <div className="flex flex-wrap items-center gap-4 mb-3">
               <div>
-                <div className="text-xs text-gray-500">Pick</div>
+                <div className="text-xs text-cream-500">Pick</div>
                 <div className="text-2xl font-bold text-white">{currentPickNumber}/{totalPicks}</div>
               </div>
               <div>
-                <div className="text-xs text-gray-500">Now Picking</div>
+                <div className="text-xs text-cream-500">Now Picking</div>
                 <div className="text-lg font-bold text-white">
                   {isMyTurn
                     ? <span className="text-gold-400">YOU!</span>
@@ -150,11 +150,11 @@ export default function DraftRoom() {
                 </div>
               </div>
               <div className="flex-1">
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                <div className="flex justify-between text-xs text-cream-500 mb-1">
                   <span>Time remaining</span>
                   <span className={timer <= 10 ? 'text-red-400 font-bold' : ''}>{timer}s</span>
                 </div>
-                <div className="h-2 bg-navy-700 rounded-full overflow-hidden">
+                <div className="h-2 bg-ink-700 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${timerColor}`}
                     style={{ width: `${timerPct}%` }}
@@ -193,7 +193,7 @@ export default function DraftRoom() {
                       <div className="font-semibold text-white">{p.name}</div>
                       <div className="flex gap-2 items-center mt-0.5">
                         <PartyBadge party={p.party} />
-                        <span className="text-xs text-gray-500">{p.title} · {p.state}</span>
+                        <span className="text-xs text-cream-500">{p.title} · {p.state}</span>
                       </div>
                     </div>
                     <button
@@ -206,7 +206,7 @@ export default function DraftRoom() {
                   </div>
                 ))}
                 {availablePoliticians.length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No politicians available matching your filters.</p>
+                  <p className="text-cream-500 text-center py-8">No politicians available matching your filters.</p>
                 )}
               </div>
             </div>
@@ -220,24 +220,24 @@ export default function DraftRoom() {
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <div className="font-semibold text-white text-sm">{member.teamName}</div>
-                        <div className="text-xs text-gray-500">{member.user.username}</div>
+                        <div className="text-xs text-cream-500">{member.user.username}</div>
                       </div>
                       {member.id === currentPickMemberId && (
-                        <span className="text-xs bg-gold-500 text-navy-900 px-1.5 py-0.5 rounded font-bold animate-pulse">
+                        <span className="text-xs bg-gold-400 text-ink-900 px-1.5 py-0.5 rounded font-bold animate-pulse">
                           ON CLOCK
                         </span>
                       )}
                     </div>
                     <div className="space-y-0.5">
                       {member.draftPicks?.map((dp: any) => (
-                        <div key={dp.id} className="text-xs text-gray-400 flex items-center gap-1">
-                          <span className="text-gray-600">#{dp.draftOrder}</span>
+                        <div key={dp.id} className="text-xs text-cream-400 flex items-center gap-1">
+                          <span className="text-cream-500">#{dp.draftOrder}</span>
                           <span>{dp.politician.name}</span>
                           <PartyBadge party={dp.politician.party} />
                         </div>
                       ))}
                       {(!member.draftPicks || member.draftPicks.length === 0) && (
-                        <div className="text-xs text-gray-600 italic">No picks yet</div>
+                        <div className="text-xs text-cream-500 italic">No picks yet</div>
                       )}
                     </div>
                   </div>

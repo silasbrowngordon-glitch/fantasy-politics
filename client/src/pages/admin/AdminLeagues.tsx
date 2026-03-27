@@ -43,7 +43,7 @@ export default function AdminLeagues() {
   return (
     <div>
       <div className="mb-6">
-        <div className="inline-block bg-crimson-600/20 border border-crimson-600/40 text-crimson-400 text-xs font-bold px-3 py-1 rounded-full mb-2">ADMIN</div>
+        <div className="inline-block bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 text-xs font-bold px-3 py-1 rounded-full mb-2">ADMIN</div>
         <h1 className="font-display text-4xl font-bold text-white">Manage Leagues</h1>
       </div>
 
@@ -52,7 +52,7 @@ export default function AdminLeagues() {
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full">
-            <thead className="border-b border-navy-600">
+            <thead className="border-b border-ink-600">
               <tr>
                 <th className="table-th">League</th>
                 <th className="table-th">Invite</th>
@@ -77,12 +77,12 @@ export default function AdminLeagues() {
                       <span className={`text-xs px-2 py-0.5 rounded font-bold ${
                         l.draftStatus === 'COMPLETE' ? 'bg-green-900 text-green-300' :
                         l.draftStatus === 'DRAFTING' ? 'bg-yellow-900 text-yellow-300' :
-                        'bg-gray-700 text-gray-400'
+                        'bg-ink-700 text-cream-400'
                       }`}>{l.draftStatus}</span>
                     </td>
-                    <td className="table-td text-gray-300">{l._count.members}/{l.maxMembers}</td>
+                    <td className="table-td text-cream-300">{l._count.members}/{l.maxMembers}</td>
                     <td className="table-td">
-                      <span className={`text-xs px-2 py-0.5 rounded font-bold ${l.isActive ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-400'}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded font-bold ${l.isActive ? 'bg-green-900 text-green-300' : 'bg-ink-700 text-cream-400'}`}>
                         {l.isActive ? 'YES' : 'NO'}
                       </span>
                     </td>

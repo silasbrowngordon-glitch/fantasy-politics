@@ -131,7 +131,7 @@ export default function Leagues() {
         <div className="card text-center py-16">
           <div className="text-5xl mb-4">🏛️</div>
           <h3 className="text-xl font-bold text-white mb-2">No leagues yet</h3>
-          <p className="text-gray-400">Create a league or enter an invite code to join one.</p>
+          <p className="text-cream-400">Create a league or enter an invite code to join one.</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
@@ -144,24 +144,24 @@ export default function Leagues() {
                     <h3 className="text-lg font-bold text-white group-hover:text-gold-400 transition-colors">
                       {m.league.name}
                     </h3>
-                    <p className="text-sm text-gray-400 mt-0.5">{m.teamName}</p>
+                    <p className="text-sm text-cream-400 mt-0.5">{m.teamName}</p>
                     <div className="flex gap-2 mt-2">
                       <span className={`text-xs px-2 py-0.5 rounded font-bold ${
                         m.league.draftStatus === 'COMPLETE' ? 'bg-green-900 text-green-300' :
                         m.league.draftStatus === 'DRAFTING' ? 'bg-yellow-900 text-yellow-300' :
-                        'bg-gray-700 text-gray-400'
+                        'bg-ink-700 text-cream-400'
                       }`}>{m.league.draftStatus}</span>
-                      <span className="text-xs text-gray-500">{m.league.members.length} members</span>
+                      <span className="text-xs text-cream-500">{m.league.members.length} members</span>
                       {m.isCommissioner && <span className="text-xs text-gold-500">Commissioner</span>}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-gold-400">{seasonTotal.toFixed(1)}</div>
-                    <div className="text-xs text-gray-500">season pts</div>
+                    <div className="text-xs text-cream-500">season pts</div>
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-navy-700 flex items-center justify-between">
-                  <span className="text-xs text-gray-500">
+                <div className="mt-3 pt-3 border-t border-ink-700 flex items-center justify-between">
+                  <span className="text-xs text-cream-500">
                     Invite: <code className="text-gold-500 font-mono font-bold">{m.league.inviteCode}</code>
                   </span>
                   <span className="text-xs text-gold-400 font-semibold">View League →</span>
