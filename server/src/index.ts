@@ -9,6 +9,7 @@ import politicianRoutes from './routes/politicians';
 import scoreRoutes from './routes/scores';
 import adminRoutes from './routes/admin';
 import newsRoutes from './routes/news';
+import tradeRoutes from './routes/trades';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -36,6 +37,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/leagues', leagueRoutes);
+app.use('/api/leagues/:id/trades', tradeRoutes);
 app.use('/api/politicians', politicianRoutes);
 app.use('/api/scores', scoreRoutes);
 app.use('/api/admin', adminRoutes);

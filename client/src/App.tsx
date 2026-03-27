@@ -14,6 +14,7 @@ import LeagueDetail from './pages/LeagueDetail';
 import DraftRoom from './pages/DraftRoom';
 import MyRoster from './pages/MyRoster';
 import MemberRoster from './pages/MemberRoster';
+import Trades from './pages/Trades';
 import Politicians from './pages/Politicians';
 import Scoring from './pages/Scoring';
 import PoliticianProfile from './pages/PoliticianProfile';
@@ -73,6 +74,7 @@ function AppRoutes() {
       <Route path="/leagues/:id/draft" element={<ProtectedRoute><DraftRoom /></ProtectedRoute>} />
       <Route path="/leagues/:id/roster" element={<ProtectedRoute><MyRoster /></ProtectedRoute>} />
       <Route path="/leagues/:id/roster/:memberId" element={<ProtectedRoute><MemberRoster /></ProtectedRoute>} />
+      <Route path="/leagues/:id/trades" element={<ProtectedRoute><Trades /></ProtectedRoute>} />
       <Route path="/politicians" element={<ProtectedRoute><Politicians /></ProtectedRoute>} />
       <Route path="/scoring" element={<ProtectedRoute><Scoring /></ProtectedRoute>} />
       <Route path="/politicians/:id" element={<ProtectedRoute><PoliticianProfile /></ProtectedRoute>} />

@@ -34,6 +34,13 @@ enum ScoringType {
   PUNDIT_CHAOS
 }
 
+enum TradeStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -61,6 +68,7 @@ model League {
   members     LeagueMember[]
   draftPicks  DraftPick[]
   dailyScores DailyScore[]
+  trades      Trade[]
 }
 
 model LeagueMember {
@@ -77,6 +85,8 @@ model LeagueMember {
   draftPicks     DraftPick[]
   dailyTotals    LeagueMemberDailyTotal[]
   startingLineup StartingLineup[]
+  tradesProposed Trade[]                 @relation("TradesProposed")
+  tradesReceived Trade[]                 @relation("TradesReceived")
 
   @@unique([userId, leagueId])
 }
@@ -147,4 +157,21 @@ model LeagueMemberDailyTotal {
   leagueMember LeagueMember @relation(fields: [leagueMemberId], references: [id])
 
   @@unique([leagueMemberId, date])
+}
+
+model Trade {
+  id           String      @id @default(cuid())
+  leagueId     String
+  proposerId   String
+  recipientId  String
+  status       TradeStatus @default(PENDING)
+  offeredIds   String[]
+  requestedIds String[]
+  message      String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  league    League       @relation(fields: [leagueId], references: [id])
+  proposer  LeagueMember @relation("TradesProposed", fields: [proposerId], references: [id])
+  recipient LeagueMember @relation("TradesReceived", fields: [recipientId], references: [id])
 }

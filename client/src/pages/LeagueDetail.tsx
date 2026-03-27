@@ -55,9 +55,12 @@ export default function LeagueDetail() {
             })}
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           {myMember && (
             <Link to={`/leagues/${id}/roster`} className="btn-secondary">My Roster</Link>
+          )}
+          {myMember && league.draftStatus === 'COMPLETE' && (
+            <Link to={`/leagues/${id}/trades`} className="btn-secondary">Trades</Link>
           )}
           {(league.draftStatus === 'DRAFTING' || (myMember?.isCommissioner && league.draftStatus === 'PREDRAFT')) && (
             <Link to={`/leagues/${id}/draft`} className="btn-primary">
