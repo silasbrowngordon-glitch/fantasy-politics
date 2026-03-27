@@ -34,8 +34,42 @@ function ScoreTable({ rows, accent }: { rows: { pts: string; label: string }[]; 
   );
 }
 
+const STANDARD_SECTIONS = [
+  {
+    key: 'standard',
+    label: 'Standard Points',
+    badge: null,
+    description: 'Applies to all leagues. Earned through legislative activity and media presence.',
+    rows: STANDARD_POINTS,
+    accent: 'text-green-400',
+  },
+  {
+    key: 'chaos',
+    label: 'Chaos Bonus',
+    badge: 'All Leagues',
+    description: 'Controversy pays. Drama, gaffes, and scandals all score — chaos is rewarded.',
+    rows: CHAOS_BONUS,
+    accent: 'text-gold-400',
+  },
+];
+
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={`w-4 h-4 text-cream-500 shrink-0 ml-4 transition-transform ${open ? 'rotate-180' : ''}`}
+      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
+
 export default function Scoring() {
-  const [openType, setOpenType] = useState<string | null>(null);
+  const [openKey, setOpenKey] = useState<string | null>(null);
+
+  function toggle(key: string) {
+    setOpenKey((prev) => (prev === key ? null : key));
+  }
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -51,29 +85,40 @@ export default function Scoring() {
         </p>
       </div>
 
-      {/* Standard Points */}
-      <div className="card mb-4">
-        <h2 className="font-display font-bold uppercase text-xl text-cream-100 mb-1 tracking-wide">
-          Standard Points
-        </h2>
-        <p className="text-sm text-cream-500 mb-4">Applies to all leagues. Earned through legislative activity and media presence.</p>
-        <ScoreTable rows={STANDARD_POINTS} accent="text-green-400" />
-      </div>
-
-      {/* Chaos Bonus */}
-      <div className="card mb-8" style={{ borderColor: 'rgba(196,30,58,0.4)' }}>
-        <div className="flex items-center gap-3 mb-1">
-          <h2 className="font-display font-bold uppercase text-xl text-cream-100 tracking-wide">
-            Chaos Bonus
-          </h2>
-          <span className="text-xs bg-gold-400 text-ink-900 px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide">
-            All Leagues
-          </span>
-        </div>
-        <p className="text-sm text-cream-500 mb-4">
-          Controversy pays. Drama, gaffes, and scandals all score — chaos is rewarded.
-        </p>
-        <ScoreTable rows={CHAOS_BONUS} accent="text-gold-400" />
+      {/* Standard + Chaos (collapsible) */}
+      <div className="space-y-3 mb-8">
+        {STANDARD_SECTIONS.map((s) => {
+          const isOpen = openKey === s.key;
+          return (
+            <div key={s.key} className="card overflow-hidden">
+              <button
+                className="w-full flex items-center justify-between text-left"
+                onClick={() => toggle(s.key)}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-display font-bold uppercase text-xl text-cream-100 tracking-wide">
+                    {s.label}
+                  </span>
+                  {s.badge && (
+                    <span className="text-xs bg-gold-400 text-ink-900 px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide">
+                      {s.badge}
+                    </span>
+                  )}
+                </div>
+                <Chevron open={isOpen} />
+              </button>
+              {!isOpen && (
+                <p className="text-sm text-cream-500 mt-1">{s.description}</p>
+              )}
+              {isOpen && (
+                <div className="mt-4 pt-4 border-t border-ink-700">
+                  <p className="text-sm text-cream-500 mb-4">{s.description}</p>
+                  <ScoreTable rows={s.rows} accent={s.accent} />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* League-Specific Scoring Types */}
@@ -87,12 +132,12 @@ export default function Scoring() {
         </p>
         <div className="space-y-3">
           {SCORING_TYPES.map((t) => {
-            const isOpen = openType === t.value;
+            const isOpen = openKey === t.value;
             return (
               <div key={t.value} className="card overflow-hidden">
                 <button
                   className="w-full flex items-center justify-between text-left"
-                  onClick={() => setOpenType(isOpen ? null : t.value)}
+                  onClick={() => toggle(t.value)}
                 >
                   <div className="flex items-center gap-3">
                     <span className={`text-xs px-2 py-0.5 rounded-sm font-display font-bold uppercase tracking-wide border ${t.badgeColor}`}>
@@ -100,12 +145,7 @@ export default function Scoring() {
                     </span>
                     <span className="text-cream-300 text-sm">{t.description}</span>
                   </div>
-                  <svg
-                    className={`w-4 h-4 text-cream-500 shrink-0 ml-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <Chevron open={isOpen} />
                 </button>
 
                 {isOpen && (
