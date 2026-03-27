@@ -17,8 +17,8 @@ export default function Logo({ size = 40 }: { size?: number }) {
           <stop offset="100%" stopColor="#1d4ed8" />
         </linearGradient>
       </defs>
-      <circle cx="50" cy="50" r="48" fill="#0b1120" stroke="url(#rimGrad)" strokeWidth="3.5" />
-      <circle cx="50" cy="50" r="42" fill="none" stroke="#1c3268" strokeWidth="1.2" strokeDasharray="4 3" />
+      <circle cx="50" cy="50" r="48" fill="#040d1f" stroke="url(#rimGrad)" strokeWidth="3.5" />
+      <circle cx="50" cy="50" r="42" fill="none" stroke="#111e44" strokeWidth="1.2" strokeDasharray="4 3" />
 
       {/* Dollar sign watermark */}
       <text
@@ -28,7 +28,7 @@ export default function Logo({ size = 40 }: { size?: number }) {
         fontSize="52"
         fontFamily="Georgia, serif"
         fontWeight="bold"
-        fill="#152650"
+        fill="#0c1835"
         opacity="0.9"
       >
         $
@@ -55,11 +55,11 @@ export default function Logo({ size = 40 }: { size?: number }) {
         {/* Donkey long ear right */}
         <ellipse cx="34" cy="32" rx="2.5" ry="7" transform="rotate(5 34 32)" />
         {/* Donkey eye */}
-        <circle cx="29" cy="45" r="1.2" fill="#0b1120" stroke="none" />
+        <circle cx="29" cy="45" r="1.2" fill="#040d1f" stroke="none" />
         {/* Donkey neck connection */}
         <rect x="33" y="50" width="8" height="8" rx="3" />
         {/* Donkey tail (left side, curly) */}
-        <path d="M28 68 Q20 65 22 58 Q24 52 28 55" fill="none" stroke="#c9a227" strokeWidth="2" strokeLinecap="round" />
+        <path d="M28 68 Q20 65 22 58 Q24 52 28 55" fill="none" stroke="#3b6ef8" strokeWidth="2" strokeLinecap="round" />
 
         {/* ── ELEPHANT side (right) ── */}
         {/* Elephant head */}
@@ -67,11 +67,11 @@ export default function Logo({ size = 40 }: { size?: number }) {
         {/* Elephant big ear */}
         <ellipse cx="80" cy="42" rx="7" ry="10" opacity="0.85" />
         {/* Elephant trunk curling down */}
-        <path d="M61 50 Q55 60 58 68 Q60 72 64 70" fill="none" stroke="#c9a227" strokeWidth="4" strokeLinecap="round" />
+        <path d="M61 50 Q55 60 58 68 Q60 72 64 70" fill="none" stroke="#3b6ef8" strokeWidth="4" strokeLinecap="round" />
         {/* Elephant tusk */}
         <path d="M62 52 Q57 56 58 62" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" />
         {/* Elephant eye */}
-        <circle cx="71" cy="42" r="1.4" fill="#0b1120" stroke="none" />
+        <circle cx="71" cy="42" r="1.4" fill="#040d1f" stroke="none" />
         {/* Elephant neck connection */}
         <rect x="59" y="50" width="8" height="8" rx="3" />
 

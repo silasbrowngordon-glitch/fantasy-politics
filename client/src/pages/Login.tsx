@@ -25,10 +25,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-ink-900 flex" style={{
-      backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)',
-      backgroundSize: '40px 40px',
-    }}>
+    <div className="min-h-screen flex">
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-ink-600 bg-ink-800">
         <Link to="/" className="flex items-center gap-3">
@@ -42,7 +39,7 @@ export default function Login() {
           <h2 className="font-display font-extrabold uppercase text-cream-100 leading-none mb-6"
               style={{ fontSize: '3.5rem', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
             Draft the<br />
-            <span style={{ color: '#d4a843' }}>chaos.</span><br />
+            <span style={{ color: '#3b6ef8' }}>chaos.</span><br />
             Score the<br />
             points.
           </h2>

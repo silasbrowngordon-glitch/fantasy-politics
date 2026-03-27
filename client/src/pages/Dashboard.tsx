@@ -61,7 +61,7 @@ export default function Dashboard() {
         <h1 className="font-display font-extrabold uppercase text-5xl text-cream-100 leading-none"
             style={{ letterSpacing: '-0.01em' }}>
           Welcome back,{' '}
-          <span style={{ color: '#d4a843' }}>{user?.username}</span>
+          <span style={{ color: '#3b6ef8' }}>{user?.username}</span>
         </h1>
         <p className="text-cream-400 mt-2 text-sm">Here's your political lineup at a glance.</p>
       </div>
@@ -100,7 +100,7 @@ export default function Dashboard() {
                   to={`/leagues/${m.league.id}`}
                   className="card block group transition-colors duration-150"
                   style={{ borderLeft: '3px solid transparent' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = '#d4a843')}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = '#3b6ef8')}
                   onMouseLeave={(e) => (e.currentTarget.style.borderLeftColor = 'transparent')}
                 >
                   <div className="flex items-start justify-between">

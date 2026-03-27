@@ -193,7 +193,7 @@ export default function PoliticianProfile() {
                   <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1c3268" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#111e44" vertical={false} />
               <XAxis
                 dataKey="date"
                 tickFormatter={fmtShort}

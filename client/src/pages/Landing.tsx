@@ -28,10 +28,7 @@ const STATS = [
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-ink-900" style={{
-      backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)',
-      backgroundSize: '40px 40px',
-    }}>
+    <div className="min-h-screen">
 
       {/* Nav */}
       <nav className="border-b border-ink-600 px-6 py-4">
@@ -57,9 +54,9 @@ export default function Landing() {
           <h1 className="font-display font-extrabold uppercase leading-none text-cream-100 mb-6"
               style={{ fontSize: 'clamp(3.5rem, 9vw, 7rem)', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
             Draft the<br />
-            <span style={{ color: '#d4a843' }}>Politicians.</span><br />
+            <span style={{ color: '#3b6ef8' }}>Politicians.</span><br />
             Win the<br />
-            <span style={{ WebkitTextStroke: '2px #d4a843', color: 'transparent' }}>Season.</span>
+            <span style={{ WebkitTextStroke: '2px #3b6ef8', color: 'transparent' }}>Season.</span>
           </h1>
 
           <p className="text-cream-300 text-lg leading-relaxed max-w-xl mt-8 mb-10 font-body">
@@ -90,13 +87,13 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Gold divider ticker */}
-      <div className="bg-gold-400 py-2 overflow-hidden">
-        <div className="flex gap-12 whitespace-nowrap font-display font-bold uppercase text-ink-900 text-sm tracking-widest px-6">
+      {/* Patriot ticker */}
+      <div className="py-2 overflow-hidden" style={{ background: 'linear-gradient(90deg, #cc1a2e 0%, #7c3aed 50%, #3b6ef8 100%)' }}>
+        <div className="flex gap-12 whitespace-nowrap font-display font-bold uppercase text-white text-sm tracking-widest px-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <React.Fragment key={i}>
               <span>Draft · Vote · Score · Win</span>
-              <span style={{ color: '#a07835' }}>★</span>
+              <span style={{ color: 'rgba(255,255,255,0.5)' }}>★</span>
             </React.Fragment>
           ))}
         </div>
@@ -117,7 +114,7 @@ export default function Landing() {
               className={`p-8 ${i < STEPS.length - 1 ? 'border-b md:border-b-0 md:border-r border-ink-600' : ''}`}
             >
               <div className="font-display font-extrabold text-6xl leading-none mb-4"
-                   style={{ color: '#2e2e3d' }}>
+                   style={{ color: '#172654' }}>
                 {step.num}
               </div>
               <h3 className="font-display font-bold uppercase text-2xl text-cream-100 mb-3"
@@ -138,7 +135,7 @@ export default function Landing() {
             <h2 className="font-display font-extrabold uppercase text-4xl text-cream-100 leading-tight"
                 style={{ letterSpacing: '-0.01em' }}>
               Chaos Bonus.<br />
-              <span style={{ color: '#d4a843' }}>Scandal pays.</span>
+              <span style={{ color: '#e52040' }}>Scandal pays.</span>
             </h2>
           </div>
           <div className="flex gap-8 flex-wrap">

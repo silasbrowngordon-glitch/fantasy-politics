@@ -4,55 +4,46 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Page backgrounds
+        // Page backgrounds — deep navy
         ink: {
-          950: '#06060a',
-          900: '#0a0a0f',
-          800: '#111118',
-          700: '#18181f',
-          600: '#22222d',
-          500: '#2e2e3d',
-          400: '#3d3d52',
-          300: '#56566e',
+          950: '#010510',
+          900: '#040d1f',
+          800: '#081228',
+          700: '#0c1835',
+          600: '#111e44',
+          500: '#172654',
+          400: '#1e2f64',
+          300: '#2a3d7a',
         },
-        // Primary accent — warm amber gold
+        // Primary accent — electric blue
         gold: {
-          600: '#a07835',
-          500: '#c4972f',
-          400: '#d4a843',
-          300: '#e8c46a',
-          200: '#f5dfa0',
-          100: '#fdf4dc',
+          600: '#1840c8',
+          500: '#2354e8',
+          400: '#3b6ef8',
+          300: '#6b92fb',
+          200: '#a8c3fd',
+          100: '#dce8ff',
         },
-        // Secondary accent — deep crimson
+        // Secondary accent — patriot red
         crimson: {
-          700: '#8b0f22',
-          600: '#a8152b',
-          500: '#c41e3a',
-          400: '#e02040',
-          300: '#f05070',
+          700: '#7d0c1a',
+          600: '#a31222',
+          500: '#cc1a2e',
+          400: '#e52040',
+          300: '#f55070',
         },
-        // Warm off-white text
+        // Cool silver text
         cream: {
-          100: '#f5efe3',
-          200: '#ede8df',
-          300: '#d8d0c4',
-          400: '#b8b0a4',
-          500: '#8a8278',
+          100: '#f0f4ff',
+          200: '#d8e0f5',
+          300: '#b0bcdc',
+          400: '#8090bc',
+          500: '#566090',
         },
       },
       fontFamily: {
         display: ['"Barlow Condensed"', 'Impact', 'sans-serif'],
         body: ['"Inter"', 'system-ui', 'sans-serif'],
-      },
-      backgroundImage: {
-        'grid-ink': `
-          linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)
-        `,
-      },
-      backgroundSize: {
-        'grid-40': '40px 40px',
       },
     },
   },

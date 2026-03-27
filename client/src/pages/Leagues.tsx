@@ -201,7 +201,7 @@ export default function Leagues() {
             const types: string[] = m.league.scoringTypes ?? [];
             return (
               <Link key={m.id} to={`/leagues/${m.league.id}`} className="card block group transition-colors" style={{ borderLeft: '3px solid transparent' }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = '#d4a843')}
+                onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = '#3b6ef8')}
                 onMouseLeave={(e) => (e.currentTarget.style.borderLeftColor = 'transparent')}>
                 <div className="flex justify-between items-start">
                   <div>

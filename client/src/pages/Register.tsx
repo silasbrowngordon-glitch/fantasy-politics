@@ -31,10 +31,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-ink-900 flex" style={{
-      backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)',
-      backgroundSize: '40px 40px',
-    }}>
+    <div className="min-h-screen flex">
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-ink-600 bg-ink-800">
         <Link to="/" className="flex items-center gap-3">
@@ -48,7 +45,7 @@ export default function Register() {
           <h2 className="font-display font-extrabold uppercase text-cream-100 leading-none mb-6"
               style={{ fontSize: '3.5rem', letterSpacing: '-0.01em', lineHeight: '0.92' }}>
             Your roster<br />
-            <span style={{ color: '#d4a843' }}>awaits.</span>
+            <span style={{ color: '#3b6ef8' }}>awaits.</span>
           </h2>
           <p className="text-cream-400 text-sm leading-relaxed max-w-xs">
             Draft senators, representatives, and governors. Score points on their votes,

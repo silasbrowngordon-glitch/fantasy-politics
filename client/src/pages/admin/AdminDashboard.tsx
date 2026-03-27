@@ -74,7 +74,7 @@ export default function AdminDashboard() {
             key={s.to}
             to={s.to}
             className={`card block group transition-colors ${s.highlight ? 'border-gold-400/40' : ''}`}
-            style={s.highlight ? { borderLeft: '3px solid #d4a843' } : {}}
+            style={s.highlight ? { borderLeft: '3px solid #3b6ef8' } : {}}
           >
             <div className={`mb-3 ${s.highlight ? 'text-gold-400' : 'text-cream-500'}`}>
               {s.icon}
