@@ -71,6 +71,30 @@ router.post('/politicians/bulk-import', upload.single('file'), async (req: AuthR
 
 // ─── SCORES ───────────────────────────────────────────────────────────────────
 
+router.get('/scores/history', async (req: AuthRequest, res: Response) => {
+  const { startDate, endDate, leagueId } = req.query;
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: 'startDate and endDate are required' });
+  }
+
+  const start = new Date((startDate as string) + 'T00:00:00.000Z');
+  const end = new Date((endDate as string) + 'T00:00:00.000Z');
+  const resolvedLeagueId = (leagueId as string) || null;
+
+  const scores = await prisma.dailyScore.findMany({
+    where: {
+      date: { gte: start, lte: end },
+      leagueId: resolvedLeagueId,
+    },
+    include: {
+      politician: { select: { id: true, name: true } },
+    },
+    orderBy: [{ politicianId: 'asc' }, { date: 'asc' }],
+  });
+
+  return res.json({ scores });
+});
+
 router.get('/scores', async (req: AuthRequest, res: Response) => {
   const dateStr = (req.query.date as string) || new Date().toISOString().split('T')[0];
   const date = new Date(dateStr + 'T00:00:00.000Z');

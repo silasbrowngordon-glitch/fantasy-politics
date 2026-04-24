@@ -93,6 +93,59 @@ export default function AdminAiScoring() {
     setStreamProgress('');
     streamBuffer.current = '';
 
+    // Fetch last 7 days of score history to prevent double-counting ongoing stories
+    let recentHistorySection = '';
+    try {
+      const endDate = new Date(date + 'T00:00:00.000Z');
+      endDate.setUTCDate(endDate.getUTCDate() - 1); // exclude the scoring date itself
+      const startDate = new Date(endDate);
+      startDate.setUTCDate(startDate.getUTCDate() - 6); // 7 days total
+
+      const endDateStr = endDate.toISOString().split('T')[0];
+      const startDateStr = startDate.toISOString().split('T')[0];
+
+      const historyRes = await api.get('/admin/scores/history', {
+        params: {
+          startDate: startDateStr,
+          endDate: endDateStr,
+          leagueId: selectedLeagueId || undefined,
+        },
+      });
+
+      const historyScores: Array<{
+        date: string;
+        points: number;
+        note?: string;
+        politician: { id: string; name: string };
+      }> = historyRes.data.scores ?? [];
+
+      if (historyScores.length > 0) {
+        // Group by politician
+        const byPolitician = new Map<string, { name: string; entries: string[] }>();
+        for (const s of historyScores) {
+          const dateLabel = new Date(s.date).toISOString().split('T')[0];
+          const line = `  ${dateLabel}: ${s.points > 0 ? '+' : ''}${s.points} pts${s.note ? ` — ${s.note}` : ''}`;
+          if (!byPolitician.has(s.politician.id)) {
+            byPolitician.set(s.politician.id, { name: s.politician.name, entries: [] });
+          }
+          byPolitician.get(s.politician.id)!.entries.push(line);
+        }
+
+        const historyLines = Array.from(byPolitician.values())
+          .map(({ name, entries }) => `${name}:\n${entries.join('\n')}`)
+          .join('\n\n');
+
+        recentHistorySection = `
+RECENT SCORING HISTORY (last 7 days — use this to prevent double-counting):
+${historyLines}
+
+CRITICAL RULE — NO DOUBLE-COUNTING: Do not award points for ongoing situations that have already been scored in the past 7 days unless there is a genuinely NEW development. For example, if a politician already received points for Iran war threats on previous days, do not score them again for the same Iran situation unless something materially new happened today (ceasefire announced, new ultimatum issued, escalation to actual conflict, etc.). Recurring mentions of the same story in the news do not count as new events. Check the history above before awarding any points.
+`;
+      }
+    } catch {
+      // Non-fatal — proceed without history if fetch fails
+    }
+
     const rubric = buildScoringRubric(activeScoringTypes);
 
     const polList = politicians
@@ -105,7 +158,7 @@ export default function AdminAiScoring() {
 
     const prompt = `${rubric}
 ${leagueNote}
-
+${recentHistorySection}
 ACTIVE POLITICIANS LIST (use the exact IDs provided):
 ${polList}
 
